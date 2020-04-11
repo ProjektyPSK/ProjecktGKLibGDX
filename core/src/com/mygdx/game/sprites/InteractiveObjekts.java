@@ -27,10 +27,10 @@ public class InteractiveObjekts {
         PolygonShape shape = new PolygonShape();
 
         bdef.type = BodyDef.BodyType.StaticBody;
-        bdef.position.set((bounds.getX() + bounds.getWidth() / 2) , (bounds.getY() + bounds.getHeight() / 2 ) );
+        bdef.position.set((bounds.getX() + bounds.getWidth() / 2 / Main.PPM) , (bounds.getY() + bounds.getHeight() / 2 / Main.PPM) );
 
         body = world.createBody(bdef);
-        shape.setAsBox(bounds.getWidth() / 2 , bounds.getHeight() / 2);
+        shape.setAsBox(bounds.getWidth() / 2 / Main.PPM , bounds.getHeight() / 2 / Main.PPM);
         fdef.shape = shape;
         body.createFixture(fdef);
     }

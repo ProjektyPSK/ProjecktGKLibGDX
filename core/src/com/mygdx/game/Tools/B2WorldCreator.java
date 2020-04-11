@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.game.sprites.Asteroid;
+import com.mygdx.game.Main;
 
 public class B2WorldCreator {
     public B2WorldCreator (World world, TiledMap map){
@@ -21,8 +21,13 @@ public class B2WorldCreator {
     // Creata body for borders
         for(MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject .class)){
         Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set(rect.getX() / Main.PPM + rect.getWidth() / 2 / Main.PPM ,  rect.getY() / Main.PPM + rect.getHeight() / 2 / Main.PPM );
 
-             new Asteroid(world, map, rect);
+            body = world.createBody(bdef);
+            shape.setAsBox(rect.getWidth() / 2 / Main.PPM, rect.getHeight() / 2 / Main.PPM) ;
+            fdef.shape = shape;
+            body.createFixture(fdef);
         }
     }
 

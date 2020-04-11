@@ -36,7 +36,7 @@ public class PlayScreen implements Screen {
     private OrthogonalTiledMapRenderer renderer;
     private Ship player;
     private TextureAtlas atlas;
-
+    private float lastTouch;
 
     private World world;
     private Box2DDebugRenderer b2dr;
@@ -45,20 +45,21 @@ public class PlayScreen implements Screen {
 
         this.game=game;
         gamecam= new OrthographicCamera();
-        gamePort = new FitViewport(Main.V_WIDTH ,Main.V_HEIGHT , gamecam);
+        gamePort = new FitViewport(Main.V_WIDTH / Main.PPM ,Main.V_HEIGHT / Main.PPM , gamecam);
         hud = new Hud(game.batch);
 
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("lvl1.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map);
+        renderer = new OrthogonalTiledMapRenderer(map , 1/ Main.PPM);
         gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight()/2 , 0);
 
-        world = new World(new Vector2(0,0), true);
+        world = new World(new Vector2(0,1f), true);
         b2dr = new Box2DDebugRenderer();
         player = new Ship(world, this);
 
 
         new B2WorldCreator (world, map);
+        lastTouch=player.b2body.getPosition().x;
     }
     @Override
     public void show() {
@@ -67,6 +68,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
+
         update(delta);
 
         Gdx.gl.glClearColor(0,0,0,1);
@@ -85,42 +87,34 @@ public class PlayScreen implements Screen {
         hud.stage.draw();
     }
 
-    public void handleInput(float dt){
+    public void handleInput(float dt) {
 
-        if (Gdx.input.isTouched()){
-           // gamecam.position.y += 1000*dt;
-           // player.setPosition(Gdx.input.getX(),Gdx.graphics.getHeight() - Gdx.input.getY());
-            // calculte the normalized direction from the body to the touch position
-            Vector2 direction = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
-            direction.sub(player.b2body.getPosition());
-            direction.nor();
+        if (Gdx.input.isTouched()) {
+            lastTouch = Gdx.input.getX() / Main.PPM * 1.1f;
+            if (((Gdx.input.getX() / Main.PPM * 1.1) > player.b2body.getPosition().x) && (Math.abs(lastTouch - player.b2body.getPosition().x) > 0.3)) {
+                player.b2body.applyLinearImpulse(new Vector2(1f, 0), player.b2body.getWorldCenter(), true);
+            }
+            if (((Gdx.input.getX() / Main.PPM * 1.1) < player.b2body.getPosition().x) && (Math.abs(lastTouch - player.b2body.getPosition().x) > 0.3)) {
+                player.b2body.applyLinearImpulse(new Vector2(-1f, 0), player.b2body.getWorldCenter(), true);
 
-            float speed = 800;
-            player.b2body.setLinearVelocity(direction.scl(speed));
+            }
         }
-        /*
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)){
-            player.b2body.applyLinearImpulse(new Vector2(0, 400f), player.b2body.getWorldCenter(), true);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-            player.b2body.applyLinearImpulse(new Vector2(0, -400f), player.b2body.getWorldCenter(), true);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)&&(player.b2body.getLinearVelocity().x <= 2)){
-            player.b2body.applyLinearImpulse(new Vector2(200f, -0), player.b2body.getWorldCenter(), true);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)&&(player.b2body.getLinearVelocity().x >= 2)){
-            player.b2body.applyLinearImpulse(new Vector2(-200f, -0), player.b2body.getWorldCenter(), true);
-        }
+    }
+    public void moveShipChecker(){
 
-         */
+        System.out.println("ostatnie klikniecie : " + lastTouch + " Pozycja gracza : " +  player.b2body.getPosition().x );
+        if (Math.abs( lastTouch - player.b2body.getPosition().x ) < 0.3){
+            player.b2body.setLinearVelocity(0,0);
+
+        }
 
     }
+
     public void update(float dt) {
         world.step(1/60f, 6 , 2);
-
         player.update(dt);
-
-        gamecam.position.y = player.b2body.getPosition().y;
+        moveShipChecker();
+        gamecam.position.y = player.b2body.getPosition().y+5;
 
         handleInput(dt);
         gamecam.update();
