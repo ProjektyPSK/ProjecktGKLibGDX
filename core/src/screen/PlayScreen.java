@@ -24,7 +24,6 @@ import com.mygdx.game.Main;
 import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.sprites.Ship;
 
-import static sun.audio.AudioPlayer.player;
 
 public class PlayScreen implements Screen {
     private Main game;
@@ -54,9 +53,9 @@ public class PlayScreen implements Screen {
         renderer = new OrthogonalTiledMapRenderer(map);
         gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight()/2 , 0);
 
-        world = new World(new Vector2(0,+20), true);
+        world = new World(new Vector2(0,0), true);
         b2dr = new Box2DDebugRenderer();
-        player = new Ship(world);
+        player = new Ship(world, this);
 
 
         new B2WorldCreator (world, map);
@@ -69,20 +68,37 @@ public class PlayScreen implements Screen {
     @Override
     public void render(float delta) {
         update(delta);
+
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         renderer.render();
 
         b2dr.render(world, gamecam.combined);
+
+        game.batch.setProjectionMatrix(gamecam.combined);
+        game.batch.begin();
+        player.draw(game.batch);
+        game.batch.end();
+
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
     }
 
     public void handleInput(float dt){
 
-      /*  if (Gdx.input.isTouched()){
-            gamecam.position.y += 1000*dt;
-        }*/
+        if (Gdx.input.isTouched()){
+           // gamecam.position.y += 1000*dt;
+           // player.setPosition(Gdx.input.getX(),Gdx.graphics.getHeight() - Gdx.input.getY());
+            // calculte the normalized direction from the body to the touch position
+            Vector2 direction = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+            direction.sub(player.b2body.getPosition());
+            direction.nor();
+
+            float speed = 800;
+            player.b2body.setLinearVelocity(direction.scl(speed));
+        }
+        /*
         if (Gdx.input.isKeyPressed(Input.Keys.UP)){
             player.b2body.applyLinearImpulse(new Vector2(0, 400f), player.b2body.getWorldCenter(), true);
         }
@@ -96,9 +112,13 @@ public class PlayScreen implements Screen {
             player.b2body.applyLinearImpulse(new Vector2(-200f, -0), player.b2body.getWorldCenter(), true);
         }
 
+         */
+
     }
     public void update(float dt) {
         world.step(1/60f, 6 , 2);
+
+        player.update(dt);
 
         gamecam.position.y = player.b2body.getPosition().y;
 

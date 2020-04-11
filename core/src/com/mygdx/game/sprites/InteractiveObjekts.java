@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygdx.game.Main;
 
 public class InteractiveObjekts {
     protected World world;
@@ -26,10 +27,10 @@ public class InteractiveObjekts {
         PolygonShape shape = new PolygonShape();
 
         bdef.type = BodyDef.BodyType.StaticBody;
-        bdef.position.set((float)bounds.getX() + (float)bounds.getWidth() / 2 ,  (float)bounds.getY() + (float)bounds.getHeight() / 2 );
+        bdef.position.set((bounds.getX() + bounds.getWidth() / 2) , (bounds.getY() + bounds.getHeight() / 2 ) );
 
         body = world.createBody(bdef);
-        shape.setAsBox((float)bounds.getWidth() / 2 , (float)bounds.getHeight() / 2);
+        shape.setAsBox(bounds.getWidth() / 2 , bounds.getHeight() / 2);
         fdef.shape = shape;
         body.createFixture(fdef);
     }
