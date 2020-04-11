@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -14,7 +15,7 @@ import com.mygdx.game.Main;
 
 import java.awt.*;
 
-public class Hud {
+public class Hud implements Disposable {
     public Stage stage;
     public Viewport viewport;
 
@@ -23,12 +24,12 @@ public class Hud {
     private Integer timeCount;
     private Integer lives;
 
-    Label countdownLabel;
-    Label scoreLabel;
-    Label timeLabel;
-    Label livescountLabel;
-    Label worldLabel;
-    Label livesLabel;
+    private Label countdownLabel;
+    private Label scoreLabel;
+    private Label timeLabel;
+    private Label livescountLabel;
+    private Label worldLabel;
+    private Label livesLabel;
 
     public Hud(SpriteBatch sb){
         worldTimer = 300;
@@ -36,7 +37,7 @@ public class Hud {
         score = 0;
         lives = 3;
 
-        viewport = new StretchViewport(Main.V_WIDTH ,Main.V_HEIGHT , new OrthographicCamera());
+        viewport = new FitViewport(Main.V_WIDTH ,Main.V_HEIGHT , new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
         Table table = new Table();
@@ -52,17 +53,21 @@ public class Hud {
                 Color.WHITE));
 
 
-        table.add(livesLabel).expandX().padTop(10);
-        table.add(worldLabel).expandX().padTop(10);
-        table.add(timeLabel).expandX().padTop(10);
+        table.add(livesLabel).expandX().padTop(80);
+        table.add(worldLabel).expandX().padTop(80);
+        table.add(timeLabel).expandX().padTop(80);
         table.row();
-        table.add(livescountLabel).expandX().padTop(10);
-        table.add(scoreLabel).expandX().padTop(10);
-        table.add(countdownLabel).expandX().padTop(10);
+        table.add(livescountLabel).expandX().padTop(80);
+        table.add(scoreLabel).expandX().padTop(80);
+        table.add(countdownLabel).expandX().padTop(80);
 
 
 
         stage.addActor(table);
     }
 
+    @Override
+    public void dispose() {
+        stage.dispose();
+    }
 }

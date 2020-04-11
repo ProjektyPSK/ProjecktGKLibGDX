@@ -9,8 +9,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import screen.PlayScreen;
 
 public class Main extends Game {
-	public  static final int V_HEIGHT =2100;
-	public  static final int V_WIDTH = 1080;
+	public  static final int V_HEIGHT =1080;
+	public  static final int V_WIDTH = 2100;
+	public  static final float PPM= 100;
 	public SpriteBatch batch;
 
 	@Override

@@ -1,0 +1,26 @@
+
+BigSprite.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Asteroid
+  rotate: false
+  xy: 1, 1
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+SpaceShipEnemy
+  rotate: false
+  xy: 73, 1
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+SpaceShipHero
+  rotate: false
+  xy: 145, 1
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1

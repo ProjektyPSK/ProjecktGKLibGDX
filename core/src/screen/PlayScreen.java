@@ -2,10 +2,13 @@ package screen;
 
 import Scenes.Hud;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureArray;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -18,6 +21,10 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
+import com.mygdx.game.Tools.B2WorldCreator;
+import com.mygdx.game.sprites.Ship;
+
+import static sun.audio.AudioPlayer.player;
 
 public class PlayScreen implements Screen {
     private Main game;
@@ -28,14 +35,18 @@ public class PlayScreen implements Screen {
     private TmxMapLoader mapLoader;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
+    private Ship player;
+    private TextureAtlas atlas;
 
 
     private World world;
     private Box2DDebugRenderer b2dr;
     public PlayScreen (Main game){
+        atlas= new TextureAtlas("BigSprite.atlas");
+
         this.game=game;
         gamecam= new OrthographicCamera();
-        gamePort = new StretchViewport(Main.V_WIDTH ,Main.V_HEIGHT , gamecam);
+        gamePort = new FitViewport(Main.V_WIDTH ,Main.V_HEIGHT , gamecam);
         hud = new Hud(game.batch);
 
         mapLoader = new TmxMapLoader();
@@ -43,26 +54,12 @@ public class PlayScreen implements Screen {
         renderer = new OrthogonalTiledMapRenderer(map);
         gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight()/2 , 0);
 
-        world= new World(new Vector2(0,0), true);
+        world = new World(new Vector2(0,+20), true);
         b2dr = new Box2DDebugRenderer();
+        player = new Ship(world);
 
-        BodyDef bdef= new BodyDef();
-        PolygonShape shape= new PolygonShape();
-        FixtureDef fdef = new FixtureDef();
-        Body body;
 
-        // Creata body for borders
-     /*   for(MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject.class)){
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set(rect.getX() + rect.getWidth() / 2 , rect.getY() + rect.getHeight() / 2 );
-
-            body = world.createBody(bdef);
-            shape.setAsBox(rect.getWidth() / 2 , rect.getHeight() / 2);
-            fdef.shape = shape;
-            body.createFixture(fdef);
-        }*/
+        new B2WorldCreator (world, map);
     }
     @Override
     public void show() {
@@ -81,15 +78,31 @@ public class PlayScreen implements Screen {
         hud.stage.draw();
     }
 
-    public void hanleInput(float dt){
+    public void handleInput(float dt){
 
-        if (Gdx.input.isTouched()){
+      /*  if (Gdx.input.isTouched()){
             gamecam.position.y += 1000*dt;
+        }*/
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)){
+            player.b2body.applyLinearImpulse(new Vector2(0, 400f), player.b2body.getWorldCenter(), true);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+            player.b2body.applyLinearImpulse(new Vector2(0, -400f), player.b2body.getWorldCenter(), true);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)&&(player.b2body.getLinearVelocity().x <= 2)){
+            player.b2body.applyLinearImpulse(new Vector2(200f, -0), player.b2body.getWorldCenter(), true);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)&&(player.b2body.getLinearVelocity().x >= 2)){
+            player.b2body.applyLinearImpulse(new Vector2(-200f, -0), player.b2body.getWorldCenter(), true);
         }
 
     }
     public void update(float dt) {
-        hanleInput(dt);
+        world.step(1/60f, 6 , 2);
+
+        gamecam.position.y = player.b2body.getPosition().y;
+
+        handleInput(dt);
         gamecam.update();
         renderer.setView(gamecam);
     }
@@ -116,6 +129,14 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
+        map.dispose();
+        renderer.dispose();
+        world.dispose();
+        b2dr.dispose();
+        hud.dispose();
+    }
 
+    public TextureAtlas getAtlas() {
+        return atlas;
     }
 }
