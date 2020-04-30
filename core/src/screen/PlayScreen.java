@@ -2,27 +2,26 @@ package screen;
 
 import Scenes.Hud;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureArray;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
 import com.mygdx.game.Tools.B2WorldCreator;
+import com.mygdx.game.Tools.WorldContactListener;
+import com.mygdx.game.sprites.Blaster;
+import com.mygdx.game.sprites.EnemyShip;
 import com.mygdx.game.sprites.Ship;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PlayScreen implements Screen {
@@ -40,6 +39,12 @@ public class PlayScreen implements Screen {
 
     private World world;
     private Box2DDebugRenderer b2dr;
+    private EnemyShip enemy;
+    private List <Blaster> blasterList;
+    private List <Blaster> blasterListToRemove;
+    private float lastHeroShotTimer;
+    private B2WorldCreator creator;
+
     public PlayScreen (Main game){
         atlas= new TextureAtlas("BigSprite.atlas");
 
@@ -51,15 +56,25 @@ public class PlayScreen implements Screen {
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("lvl1.tmx");
         renderer = new OrthogonalTiledMapRenderer(map , 1/ Main.PPM);
+
         gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight()/2 , 0);
 
-        world = new World(new Vector2(0,1f), true);
+        world = new World(new Vector2(0,0), true);
         b2dr = new Box2DDebugRenderer();
         player = new Ship(world, this);
 
 
-        new B2WorldCreator (world, map);
+        creator = new B2WorldCreator (world, map, this);
         lastTouch=player.b2body.getPosition().x;
+
+  //      enemy = new EnemyShip(world,this, 800 , 800);
+
+        world.setContactListener(new WorldContactListener());
+
+        blasterList = new ArrayList<>();
+        blasterListToRemove = new ArrayList<>();
+
+        lastHeroShotTimer =0;
     }
     @Override
     public void show() {
@@ -81,6 +96,11 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
         player.draw(game.batch);
+        for (EnemyShip enemy: creator.getEnemyShips()) {
+            enemy.draw(game.batch);
+        }
+        for (Blaster blaster: blasterList)
+        blaster.draw(game.batch);
         game.batch.end();
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -88,6 +108,7 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float dt) {
+
 
         if (Gdx.input.isTouched()) {
             lastTouch = Gdx.input.getX() / Main.PPM * 1.1f;
@@ -98,16 +119,28 @@ public class PlayScreen implements Screen {
                 player.b2body.applyLinearImpulse(new Vector2(-1f, 0), player.b2body.getWorldCenter(), true);
 
             }
+            if(player.getShootTime() <= lastHeroShotTimer ) {
+                blasterList.add(new Blaster(world, this, player.getX() + player.getWidth() / 2, player.getY() + 1));
+                blasterList.get(blasterList.size() - 1).b2body.applyLinearImpulse(new Vector2(0, 10f), blasterList.get(blasterList.size() - 1).b2body.getWorldCenter(), true);
+                lastHeroShotTimer = 0;
+            }
+
         }
     }
     public void moveShipChecker(){
-
-        System.out.println("ostatnie klikniecie : " + lastTouch + " Pozycja gracza : " +  player.b2body.getPosition().x );
         if (Math.abs( lastTouch - player.b2body.getPosition().x ) < 0.3){
             player.b2body.setLinearVelocity(0,0);
-
         }
-
+    }
+    public void updateBlasterList(){
+        for (Blaster blaster: blasterList){
+            if (blaster.getStateTime() > 2 || blaster.isDestroyed() || blaster.isSetToDestroy()){
+                blasterListToRemove.add(blaster);
+            }
+        }
+        for (Blaster blaster: blasterListToRemove){
+            blasterList.remove(blaster);
+        }
     }
 
     public void update(float dt) {
@@ -115,10 +148,16 @@ public class PlayScreen implements Screen {
         player.update(dt);
         moveShipChecker();
         gamecam.position.y = player.b2body.getPosition().y+5;
-
+        for (EnemyShip enemy: creator.getEnemyShips()) {
+            enemy.update(dt , player);
+        }
+        for (Blaster blaster: blasterList)
+        blaster.update(dt);
         handleInput(dt);
         gamecam.update();
         renderer.setView(gamecam);
+        updateBlasterList();
+        lastHeroShotTimer += dt;
     }
 
     @Override
@@ -152,5 +191,97 @@ public class PlayScreen implements Screen {
 
     public TextureAtlas getAtlas() {
         return atlas;
+    }
+
+    public Main getGame() {
+        return game;
+    }
+
+    public void setGame(Main game) {
+        this.game = game;
+    }
+
+    public Hud getHud() {
+        return hud;
+    }
+
+    public void setHud(Hud hud) {
+        this.hud = hud;
+    }
+
+    public OrthographicCamera getGamecam() {
+        return gamecam;
+    }
+
+    public void setGamecam(OrthographicCamera gamecam) {
+        this.gamecam = gamecam;
+    }
+
+    public Viewport getGamePort() {
+        return gamePort;
+    }
+
+    public void setGamePort(Viewport gamePort) {
+        this.gamePort = gamePort;
+    }
+
+    public TmxMapLoader getMapLoader() {
+        return mapLoader;
+    }
+
+    public void setMapLoader(TmxMapLoader mapLoader) {
+        this.mapLoader = mapLoader;
+    }
+
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public void setMap(TiledMap map) {
+        this.map = map;
+    }
+
+    public OrthogonalTiledMapRenderer getRenderer() {
+        return renderer;
+    }
+
+    public void setRenderer(OrthogonalTiledMapRenderer renderer) {
+        this.renderer = renderer;
+    }
+
+    public Ship getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Ship player) {
+        this.player = player;
+    }
+
+    public void setAtlas(TextureAtlas atlas) {
+        this.atlas = atlas;
+    }
+
+    public float getLastTouch() {
+        return lastTouch;
+    }
+
+    public void setLastTouch(float lastTouch) {
+        this.lastTouch = lastTouch;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+    public Box2DDebugRenderer getB2dr() {
+        return b2dr;
+    }
+
+    public void setB2dr(Box2DDebugRenderer b2dr) {
+        this.b2dr = b2dr;
     }
 }
