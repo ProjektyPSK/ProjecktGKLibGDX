@@ -5,22 +5,36 @@ filter: Nearest,Nearest
 repeat: none
 Asteroid
   rotate: false
-  xy: 1, 1
+  xy: 1, 33
   size: 70, 70
   orig: 70, 70
   offset: 0, 0
   index: -1
 SpaceShipEnemy
   rotate: false
-  xy: 73, 1
+  xy: 73, 33
   size: 70, 70
   orig: 70, 70
   offset: 0, 0
   index: -1
 SpaceShipHero
   rotate: false
-  xy: 145, 1
+  xy: 145, 33
   size: 70, 70
   orig: 70, 70
+  offset: 0, 0
+  index: -1
+Enemy_blaster
+  rotate: false
+  xy: 1, 1
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+Hero_blaster
+  rotate: false
+  xy: 217, 73
+  size: 30, 30
+  orig: 30, 30
   offset: 0, 0
   index: -1

@@ -22,7 +22,7 @@ public class Ship extends Sprite {
         super(screen.getAtlas().findRegion("SpaceShipHero"));
         this.world = world;
         defineShip();
-        shipNew = new TextureRegion(getTexture(),145,1,70,70);
+        shipNew = new TextureRegion(getTexture(),145,33,70,70);
         setBounds(500/ Main.PPM,500/ Main.PPM,70 / Main.PPM,70 / Main.PPM);
         setRegion(shipNew);
         shootTime = 0.2f;

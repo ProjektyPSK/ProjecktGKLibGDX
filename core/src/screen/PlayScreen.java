@@ -17,6 +17,7 @@ import com.mygdx.game.Main;
 import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.WorldContactListener;
 import com.mygdx.game.sprites.Blaster;
+import com.mygdx.game.sprites.EnemyBlaster;
 import com.mygdx.game.sprites.EnemyShip;
 import com.mygdx.game.sprites.Ship;
 
@@ -44,13 +45,14 @@ public class PlayScreen implements Screen {
     private List <Blaster> blasterListToRemove;
     private float lastHeroShotTimer;
     private B2WorldCreator creator;
+    private List <EnemyBlaster> enemyBlasterListToRemove;
 
     public PlayScreen (Main game){
         atlas= new TextureAtlas("BigSprite.atlas");
 
         this.game=game;
         gamecam= new OrthographicCamera();
-        gamePort = new FitViewport(Main.V_WIDTH / Main.PPM ,Main.V_HEIGHT / Main.PPM , gamecam);
+        gamePort = new FitViewport(Main.V_WIDTH / 50 ,Main.V_HEIGHT / 50 , gamecam);
         hud = new Hud(game.batch);
 
         mapLoader = new TmxMapLoader();
@@ -67,12 +69,12 @@ public class PlayScreen implements Screen {
         creator = new B2WorldCreator (world, map, this);
         lastTouch=player.b2body.getPosition().x;
 
-  //      enemy = new EnemyShip(world,this, 800 , 800);
 
         world.setContactListener(new WorldContactListener());
 
         blasterList = new ArrayList<>();
         blasterListToRemove = new ArrayList<>();
+        enemyBlasterListToRemove = new ArrayList<>();
 
         lastHeroShotTimer =0;
     }
@@ -99,8 +101,15 @@ public class PlayScreen implements Screen {
         for (EnemyShip enemy: creator.getEnemyShips()) {
             enemy.draw(game.batch);
         }
-        for (Blaster blaster: blasterList)
-        blaster.draw(game.batch);
+        for (EnemyShip enemy: creator.getEnemyShipsStage2()) {
+            enemy.draw(game.batch);
+        }
+        for (Blaster blaster: blasterList) {
+            blaster.draw(game.batch);
+        }
+        for (EnemyBlaster blaster: creator.getEnemyShips().get(0).getBlasterList()) {
+            blaster.draw(game.batch);
+        }
         game.batch.end();
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -142,6 +151,17 @@ public class PlayScreen implements Screen {
             blasterList.remove(blaster);
         }
     }
+    public void updateEnemyBlasterList () {
+        for (EnemyBlaster blaster: creator.getEnemyShips().get(0).getBlasterList() ){
+            if (blaster.getStateTime() > 10 || blaster.isDestroyed() || blaster.isSetToDestroy()){
+                enemyBlasterListToRemove.add(blaster);
+            }
+        }
+        for (EnemyBlaster blaster: enemyBlasterListToRemove){
+            creator.getEnemyShips().get(0).getBlasterList().remove(blaster);
+
+        }
+    }
 
     public void update(float dt) {
         world.step(1/60f, 6 , 2);
@@ -151,13 +171,23 @@ public class PlayScreen implements Screen {
         for (EnemyShip enemy: creator.getEnemyShips()) {
             enemy.update(dt , player);
         }
-        for (Blaster blaster: blasterList)
-        blaster.update(dt);
+        for (EnemyShip enemy: creator.getEnemyShipsStage2()) {
+            enemy.update(dt , player);
+        }
+        for (Blaster blaster: blasterList) {
+            blaster.update(dt);
+        }
+        for (EnemyBlaster blaster: creator.getEnemyShips().get(0).getBlasterList()) {
+            blaster.update(dt);
+        }
+
         handleInput(dt);
         gamecam.update();
         renderer.setView(gamecam);
         updateBlasterList();
+        updateEnemyBlasterList();
         lastHeroShotTimer += dt;
+        System.out.println(creator.getEnemyShips().size);
     }
 
     @Override
@@ -283,5 +313,53 @@ public class PlayScreen implements Screen {
 
     public void setB2dr(Box2DDebugRenderer b2dr) {
         this.b2dr = b2dr;
+    }
+
+    public EnemyShip getEnemy() {
+        return enemy;
+    }
+
+    public void setEnemy(EnemyShip enemy) {
+        this.enemy = enemy;
+    }
+
+    public List<Blaster> getBlasterList() {
+        return blasterList;
+    }
+
+    public void setBlasterList(List<Blaster> blasterList) {
+        this.blasterList = blasterList;
+    }
+
+    public List<Blaster> getBlasterListToRemove() {
+        return blasterListToRemove;
+    }
+
+    public void setBlasterListToRemove(List<Blaster> blasterListToRemove) {
+        this.blasterListToRemove = blasterListToRemove;
+    }
+
+    public float getLastHeroShotTimer() {
+        return lastHeroShotTimer;
+    }
+
+    public void setLastHeroShotTimer(float lastHeroShotTimer) {
+        this.lastHeroShotTimer = lastHeroShotTimer;
+    }
+
+    public B2WorldCreator getCreator() {
+        return creator;
+    }
+
+    public void setCreator(B2WorldCreator creator) {
+        this.creator = creator;
+    }
+
+    public List<EnemyBlaster> getEnemyBlasterListToRemove() {
+        return enemyBlasterListToRemove;
+    }
+
+    public void setEnemyBlasterListToRemove(List<EnemyBlaster> enemyBlasterListToRemove) {
+        this.enemyBlasterListToRemove = enemyBlasterListToRemove;
     }
 }

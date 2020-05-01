@@ -11,6 +11,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Main;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import screen.PlayScreen;
@@ -25,6 +28,7 @@ public class EnemyShip extends Sprite {
     private float shootTime;
     private Random rand;
     private EnemyBlaster blaster;
+    private static List<EnemyBlaster> blasterList = new ArrayList<>();
     private PlayScreen screen;
 
 
@@ -34,7 +38,7 @@ public class EnemyShip extends Sprite {
         this.world = world;
         this.screen = screen;
         defineShip(x, y);
-        shipNew = new TextureRegion(getTexture(),73,1,70,70);
+        shipNew = new TextureRegion(getTexture(),73,33,70,70);
         setBounds(x/ Main.PPM,y/ Main.PPM,70 / Main.PPM,70 / Main.PPM);
         setRegion(shipNew);
         setToDestroy = false;
@@ -43,10 +47,10 @@ public class EnemyShip extends Sprite {
     }
 
     public void update (float dt, Ship player){
-
         if (setToDestroy && !destroyed){
             world.destroyBody(b2body);
             destroyed = true;
+            screen.getCreator().getEnemyShips().removeValue(this, true);
         }
 
         else if (!destroyed){
@@ -77,8 +81,9 @@ public class EnemyShip extends Sprite {
     public void shoot(float dt){
         shootTime += dt;
         if(shootTime  >= (rand.nextInt(5000)  /1.3 )){
-           blaster =  new EnemyBlaster(world, screen , this.getX() + this.getWidth() / 2, this.getY() - 1);
-           blaster.b2body.applyLinearImpulse(new Vector2(0, -2f),blaster.b2body.getWorldCenter(), true);
+           blasterList.add(new EnemyBlaster(world, screen , this.getX() + this.getWidth() / 2, this.getY())) ;
+           blasterList.get(blasterList.size()-1).b2body.setLinearVelocity(0,-2f);
+
            shootTime = 0;
         }
     }
@@ -112,5 +117,11 @@ public class EnemyShip extends Sprite {
 
     public void colideWithEntiti(){
             setToDestroy = true;
+
             }
+
+    public static List<EnemyBlaster> getBlasterList() {
+        return blasterList;
+    }
+
 }

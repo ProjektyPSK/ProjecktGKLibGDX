@@ -21,10 +21,10 @@ public class EnemyBlaster extends Sprite {
     private float stateTime;
 
     public EnemyBlaster (World world, PlayScreen screen, float x, float y){
-        super(screen.getAtlas().findRegion("SpaceShipEnemy"));
+        super(screen.getAtlas().findRegion("Enemy_blaster"));
         this.world = world;
         defineBlaster(x, y);
-        shipNew = new TextureRegion(getTexture(),73,1,70,70);
+        shipNew = new TextureRegion(getTexture(),1,1,30,30);
         setBounds(x/ Main.PPM,y/ Main.PPM,20 / Main.PPM,20 / Main.PPM);
         setRegion(shipNew);
         setToDestroy = false;
@@ -34,7 +34,7 @@ public class EnemyBlaster extends Sprite {
 
     public void update (float dt){
         stateTime += dt;
-        if (stateTime > 2) {
+        if (stateTime > 10) {
             setToDestroy = true;
         }
         if (setToDestroy && !destroyed){
@@ -65,7 +65,7 @@ public class EnemyBlaster extends Sprite {
         b2body.createFixture(fdef).setUserData(this);
     }
     public void draw(Batch batch){
-        if(!destroyed || stateTime < 2)
+        if(!destroyed || stateTime < 10)
             super.draw(batch);
     }
 
@@ -88,4 +88,5 @@ public class EnemyBlaster extends Sprite {
     public boolean isDestroyed() {
         return destroyed;
     }
+
 }

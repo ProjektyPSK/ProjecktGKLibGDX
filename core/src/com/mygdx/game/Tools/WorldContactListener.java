@@ -28,7 +28,6 @@ public class WorldContactListener implements ContactListener {
 
 
             case Main.SHIP_ENEMY_BIT | Main.SHIP_HERO_BIT:
-                System.out.println("KOlizna statku bohatera z przeciwnikiem");
                 if(fixA.getFilterData().categoryBits == Main.SHIP_ENEMY_BIT){
 
                    ((EnemyShip) fixA.getUserData()).colideWithEntiti();
@@ -41,7 +40,6 @@ public class WorldContactListener implements ContactListener {
                 }
                 break;
             case Main.SHIP_ENEMY_BIT | Main.BLASTER_HERO:
-                System.out.println("kolizja blastera z przeciwnikiem");
                 if(fixA.getFilterData().categoryBits == Main.SHIP_ENEMY_BIT) {
                     ((EnemyShip) fixA.getUserData()).colideWithEntiti();
                     ((Blaster) fixB.getUserData()).colideWithEntiti();
@@ -57,7 +55,7 @@ public class WorldContactListener implements ContactListener {
                 ((EnemyShip) fixA.getUserData()).;*/
 
 
-            default: System.out.println("Żadne z powyższych");
+            default:
                 break;
 
 

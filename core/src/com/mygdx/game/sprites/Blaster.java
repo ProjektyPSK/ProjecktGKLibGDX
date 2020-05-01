@@ -21,10 +21,10 @@ public class Blaster extends Sprite {
     private float stateTime;
 
     public Blaster (World world, PlayScreen screen, float x, float y){
-        super(screen.getAtlas().findRegion("SpaceShipEnemy"));
+        super(screen.getAtlas().findRegion("Hero_blaster"));
         this.world = world;
         defineBlaster(x, y);
-        shipNew = new TextureRegion(getTexture(),73,1,70,70);
+        shipNew = new TextureRegion(getTexture(),217,73,30,30);
         setBounds(x/ Main.PPM,y/ Main.PPM,20 / Main.PPM,20 / Main.PPM);
         setRegion(shipNew);
         setToDestroy = false;

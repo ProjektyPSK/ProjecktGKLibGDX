@@ -17,6 +17,7 @@ import screen.PlayScreen;
 
 public class B2WorldCreator {
     public Array<EnemyShip> enemyShips;
+    public Array<EnemyShip> enemyShipsStage2;
 
     public B2WorldCreator(World world, TiledMap map, PlayScreen screen) {
         BodyDef bdef = new BodyDef();
@@ -38,18 +39,25 @@ public class B2WorldCreator {
             fdef.filter.categoryBits = Main.BORDER;
             body.createFixture(fdef);
         }
-
-        //create enemys ships
+        //create body for enemys ships
         enemyShips = new Array<EnemyShip>();
         for (MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             enemyShips.add(new EnemyShip(world ,screen , rect.getX()  , rect.getY() ));
         }
 
-
+        enemyShipsStage2 = new Array<EnemyShip>();
+        for (MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            enemyShipsStage2.add(new EnemyShip(world ,screen , rect.getX()  , rect.getY() ));
+        }
     }
 
     public Array<EnemyShip> getEnemyShips() {
         return enemyShips;
+    }
+
+    public Array<EnemyShip> getEnemyShipsStage2() {
+        return enemyShipsStage2;
     }
 }
