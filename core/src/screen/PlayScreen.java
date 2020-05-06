@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
@@ -28,7 +29,7 @@ import java.util.List;
 public class PlayScreen implements Screen {
     private Main game;
     private Hud hud;
-    private OrthographicCamera gamecam;
+    private OrthographicCamera gameCam;
     private Viewport gamePort;
 
     private TmxMapLoader mapLoader;
@@ -46,20 +47,22 @@ public class PlayScreen implements Screen {
     private float lastHeroShotTimer;
     private B2WorldCreator creator;
     private List <EnemyBlaster> enemyBlasterListToRemove;
+    private Array<EnemyShip> enemyShips;
+    private int waveCounter;
 
     public PlayScreen (Main game){
         atlas= new TextureAtlas("BigSprite.atlas");
 
         this.game=game;
-        gamecam= new OrthographicCamera();
-        gamePort = new FitViewport(Main.V_WIDTH / 50 ,Main.V_HEIGHT / 50 , gamecam);
+        gameCam= new OrthographicCamera();
+        gamePort = new FitViewport(Main.V_WIDTH / Main.PPM ,Main.V_HEIGHT / Main.PPM , gameCam);
         hud = new Hud(game.batch);
 
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("lvl1.tmx");
         renderer = new OrthogonalTiledMapRenderer(map , 1/ Main.PPM);
 
-        gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight()/2 , 0);
+        gameCam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight()/2 , 0);
 
         world = new World(new Vector2(0,0), true);
         b2dr = new Box2DDebugRenderer();
@@ -77,6 +80,10 @@ public class PlayScreen implements Screen {
         enemyBlasterListToRemove = new ArrayList<>();
 
         lastHeroShotTimer =0;
+        enemyShips = new Array<>();
+        creator.CreateNewWave(enemyShips, 2);
+        waveCounter=1;
+
     }
     @Override
     public void show() {
@@ -93,23 +100,22 @@ public class PlayScreen implements Screen {
 
         renderer.render();
 
-        b2dr.render(world, gamecam.combined);
+        b2dr.render(world, gameCam.combined);
 
-        game.batch.setProjectionMatrix(gamecam.combined);
+        game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
         player.draw(game.batch);
-        for (EnemyShip enemy: creator.getEnemyShips()) {
-            enemy.draw(game.batch);
-        }
-        for (EnemyShip enemy: creator.getEnemyShipsStage2()) {
+        for (EnemyShip enemy: enemyShips) {
             enemy.draw(game.batch);
         }
         for (Blaster blaster: blasterList) {
             blaster.draw(game.batch);
         }
-        for (EnemyBlaster blaster: creator.getEnemyShips().get(0).getBlasterList()) {
-            blaster.draw(game.batch);
-        }
+            if (EnemyShip.getBlasterList().size() > 0) {
+                for (EnemyBlaster blaster : EnemyShip.getBlasterList()) {
+                    blaster.draw(game.batch);
+                }
+            }
         game.batch.end();
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -118,8 +124,7 @@ public class PlayScreen implements Screen {
 
     public void handleInput(float dt) {
 
-
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.isTouched() ) {
             lastTouch = Gdx.input.getX() / Main.PPM * 1.1f;
             if (((Gdx.input.getX() / Main.PPM * 1.1) > player.b2body.getPosition().x) && (Math.abs(lastTouch - player.b2body.getPosition().x) > 0.3)) {
                 player.b2body.applyLinearImpulse(new Vector2(1f, 0), player.b2body.getWorldCenter(), true);
@@ -128,12 +133,16 @@ public class PlayScreen implements Screen {
                 player.b2body.applyLinearImpulse(new Vector2(-1f, 0), player.b2body.getWorldCenter(), true);
 
             }
-            if(player.getShootTime() <= lastHeroShotTimer ) {
+            if((player.getShootTime() <= lastHeroShotTimer) && (player.isCanShoot()) ) {
                 blasterList.add(new Blaster(world, this, player.getX() + player.getWidth() / 2, player.getY() + 1));
                 blasterList.get(blasterList.size() - 1).b2body.applyLinearImpulse(new Vector2(0, 10f), blasterList.get(blasterList.size() - 1).b2body.getWorldCenter(), true);
                 lastHeroShotTimer = 0;
             }
 
+        }
+        lastHeroShotTimer += dt;
+        if ( lastHeroShotTimer > 4){
+            player.setCanShoot(true);
         }
     }
     public void moveShipChecker(){
@@ -152,14 +161,16 @@ public class PlayScreen implements Screen {
         }
     }
     public void updateEnemyBlasterList () {
-        for (EnemyBlaster blaster: creator.getEnemyShips().get(0).getBlasterList() ){
-            if (blaster.getStateTime() > 10 || blaster.isDestroyed() || blaster.isSetToDestroy()){
-                enemyBlasterListToRemove.add(blaster);
+        if (enemyShips.size > 0) {
+            for (EnemyBlaster blaster : EnemyShip.getBlasterList()) {
+                if (blaster.getStateTime() > 10 || blaster.isDestroyed() || blaster.isSetToDestroy()) {
+                    enemyBlasterListToRemove.add(blaster);
+                }
             }
-        }
-        for (EnemyBlaster blaster: enemyBlasterListToRemove){
-            creator.getEnemyShips().get(0).getBlasterList().remove(blaster);
-
+            for (EnemyBlaster blaster : enemyBlasterListToRemove) {
+                if (EnemyShip.getBlasterList().size() > 0)
+                    EnemyShip.getBlasterList().remove(blaster);
+            }
         }
     }
 
@@ -167,27 +178,42 @@ public class PlayScreen implements Screen {
         world.step(1/60f, 6 , 2);
         player.update(dt);
         moveShipChecker();
-        gamecam.position.y = player.b2body.getPosition().y+5;
-        for (EnemyShip enemy: creator.getEnemyShips()) {
-            enemy.update(dt , player);
-        }
-        for (EnemyShip enemy: creator.getEnemyShipsStage2()) {
-            enemy.update(dt , player);
-        }
+        updateEnemiesWave (dt);
+        gameCam.position.y = player.b2body.getPosition().y+5;
         for (Blaster blaster: blasterList) {
             blaster.update(dt);
         }
-        for (EnemyBlaster blaster: creator.getEnemyShips().get(0).getBlasterList()) {
-            blaster.update(dt);
-        }
-
+            if (EnemyShip.getBlasterList().size() > 0) {
+                for (EnemyBlaster blaster : EnemyShip.getBlasterList()) {
+                    blaster.update(dt);
+                }
+            }
         handleInput(dt);
-        gamecam.update();
-        renderer.setView(gamecam);
+        gameCam.update();
+        renderer.setView(gameCam);
         updateBlasterList();
         updateEnemyBlasterList();
-        lastHeroShotTimer += dt;
-        System.out.println(creator.getEnemyShips().size);
+        hud.update(dt);
+    }
+
+    public void updateEnemiesWave (float dt){
+        for (EnemyShip enemy: enemyShips) {
+            enemy.update(dt , player);
+            if (enemyShips.size < 1){
+                switch (waveCounter){
+                    case 1: creator.CreateNewWave(enemyShips, 3);
+                        player.setCanShoot(false);
+                        break;
+                    case 2: creator.CreateNewWave(enemyShips, 4);
+                        player.setCanShoot(false);
+                        break;
+                    default:System.out.println("Skonczyly się fale");
+                    break;
+                }
+                waveCounter++;
+            }
+        }
+
     }
 
     @Override
@@ -239,12 +265,12 @@ public class PlayScreen implements Screen {
         this.hud = hud;
     }
 
-    public OrthographicCamera getGamecam() {
-        return gamecam;
+    public OrthographicCamera getgameCam() {
+        return gameCam;
     }
 
-    public void setGamecam(OrthographicCamera gamecam) {
-        this.gamecam = gamecam;
+    public void setgameCam(OrthographicCamera gameCam) {
+        this.gameCam = gameCam;
     }
 
     public Viewport getGamePort() {
@@ -361,5 +387,14 @@ public class PlayScreen implements Screen {
 
     public void setEnemyBlasterListToRemove(List<EnemyBlaster> enemyBlasterListToRemove) {
         this.enemyBlasterListToRemove = enemyBlasterListToRemove;
+    }
+
+
+    public Array<EnemyShip> getEnemyShips() {
+        return enemyShips;
+    }
+
+    public void setEnemyShips(Array<EnemyShip> enemyShips) {
+        this.enemyShips = enemyShips;
     }
 }

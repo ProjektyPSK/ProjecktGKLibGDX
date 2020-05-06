@@ -17,6 +17,7 @@ public class Ship extends Sprite {
     public Body b2body;
     private TextureRegion shipNew;
     private float shootTime;
+    private boolean canShoot;
 
     public Ship(World world, PlayScreen screen){
         super(screen.getAtlas().findRegion("SpaceShipHero"));
@@ -46,6 +47,7 @@ public class Ship extends Sprite {
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
+        canShoot = false;
 
     }
 
@@ -59,5 +61,13 @@ public class Ship extends Sprite {
     public void colideWithBorder(){
         this.b2body.setLinearVelocity(0,0);
 
+    }
+
+    public boolean isCanShoot() {
+        return canShoot;
+    }
+
+    public void setCanShoot(boolean canShoot) {
+        this.canShoot = canShoot;
     }
 }

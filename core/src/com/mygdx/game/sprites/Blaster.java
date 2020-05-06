@@ -30,11 +30,12 @@ public class Blaster extends Sprite {
         setToDestroy = false;
         destroyed = false;
         stateTime=0;
+        setPosition(b2body.getPosition().x - getWidth() /2 , b2body.getPosition().y - getHeight() /2);
     }
 
     public void update (float dt){
     stateTime += dt;
-    if (stateTime > 2) {
+    if (stateTime > 1.2f) {
         setToDestroy = true;
     }
         if (setToDestroy && !destroyed){
@@ -65,7 +66,7 @@ public class Blaster extends Sprite {
         b2body.createFixture(fdef).setUserData(this);
     }
     public void draw(Batch batch){
-        if(!destroyed || stateTime < 2)
+        if(!destroyed || stateTime < 1.2f)
             super.draw(batch);
     }
 

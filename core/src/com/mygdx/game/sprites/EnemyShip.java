@@ -11,11 +11,11 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Main;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import Scenes.Hud;
 import screen.PlayScreen;
 
 public class EnemyShip extends Sprite {
@@ -30,6 +30,7 @@ public class EnemyShip extends Sprite {
     private EnemyBlaster blaster;
     private static List<EnemyBlaster> blasterList = new ArrayList<>();
     private PlayScreen screen;
+    boolean canShoot;
 
 
     public EnemyShip(World world, PlayScreen screen, float x, float y){
@@ -44,13 +45,15 @@ public class EnemyShip extends Sprite {
         setToDestroy = false;
         destroyed = false;
         movementTime = 0;
+
     }
 
     public void update (float dt, Ship player){
         if (setToDestroy && !destroyed){
+            Hud.updateScore(200);
             world.destroyBody(b2body);
             destroyed = true;
-            screen.getCreator().getEnemyShips().removeValue(this, true);
+            screen.getEnemyShips().removeValue(this, true);
         }
 
         else if (!destroyed){
@@ -76,15 +79,20 @@ public class EnemyShip extends Sprite {
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
-        this.b2body.applyLinearImpulse(new Vector2(0, -0.2f), this.b2body.getWorldCenter(), true);
+        this.b2body.applyLinearImpulse(new Vector2(0, -0.4f), this.b2body.getWorldCenter(), true);
+        canShoot = false;
     }
     public void shoot(float dt){
-        shootTime += dt;
-        if(shootTime  >= (rand.nextInt(5000)  /1.3 )){
+
+        if(shootTime  >= (rand.nextInt(5000)  /1.3 ) &&(canShoot)){
            blasterList.add(new EnemyBlaster(world, screen , this.getX() + this.getWidth() / 2, this.getY())) ;
            blasterList.get(blasterList.size()-1).b2body.setLinearVelocity(0,-2f);
 
            shootTime = 0;
+        }
+        shootTime += dt;
+        if (shootTime > 4){
+            this.canShoot=true;
         }
     }
     public void movement(float dt, Ship player){
@@ -105,10 +113,6 @@ public class EnemyShip extends Sprite {
 
     }
 
-    public void reverceVelocity (boolean x , boolean y){
-  //     if (x)
-          //  velocity
-    }
 
     public void draw(Batch batch){
         if(!destroyed)
@@ -124,4 +128,7 @@ public class EnemyShip extends Sprite {
         return blasterList;
     }
 
+    public boolean isCanShoot() {
+        return canShoot;
+    }
 }

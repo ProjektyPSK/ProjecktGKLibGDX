@@ -20,15 +20,13 @@ public class Hud implements Disposable {
     public Viewport viewport;
 
     private Integer worldTimer;
-    private Integer score;
-    private Integer timeCount;
+    private static Integer score;
+    private float timeCount;
     private Integer lives;
 
     private Label countdownLabel;
-    private Label scoreLabel;
+    private static Label scoreLabel;
     private Label timeLabel;
-    private Label livescountLabel;
-    private Label worldLabel;
     private Label livesLabel;
 
     public Hud(SpriteBatch sb){
@@ -37,7 +35,7 @@ public class Hud implements Disposable {
         score = 0;
         lives = 3;
 
-        viewport = new FitViewport(Main.V_WIDTH / Main.PPM ,Main.V_HEIGHT / Main.PPM , new OrthographicCamera());
+        viewport = new FitViewport(Main.V_WIDTH  ,Main.V_HEIGHT  , new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
         Table table = new Table();
@@ -47,27 +45,93 @@ public class Hud implements Disposable {
         countdownLabel = new Label(String.format("%03d", worldTimer), new Label.LabelStyle( new BitmapFont(), Color.WHITE));
         scoreLabel = new Label(String.format("%06d", score), new Label.LabelStyle( new BitmapFont(), Color.WHITE));
         timeLabel = new Label("TIME", new Label.LabelStyle( new BitmapFont(),Color.WHITE));
-        livescountLabel = new Label("3", new Label.LabelStyle( new BitmapFont(), Color.WHITE));
-        worldLabel = new Label("World", new Label.LabelStyle( new BitmapFont(), Color.WHITE));
-        livesLabel = new Label("lives" , new Label.LabelStyle( new BitmapFont(),
-                Color.WHITE));
+        livesLabel = new Label("SCORE" , new Label.LabelStyle( new BitmapFont(), Color.WHITE));
 
-
-        table.add(livesLabel).expandX().padTop(80);
-        table.add(worldLabel).expandX().padTop(80);
-        table.add(timeLabel).expandX().padTop(80);
+        table.add(livesLabel).expandX().padTop(10);
+        table.add(timeLabel).expandX().padTop(10);
         table.row();
-        table.add(livescountLabel).expandX().padTop(80);
-        table.add(scoreLabel).expandX().padTop(80);
-        table.add(countdownLabel).expandX().padTop(80);
-
-
+        table.add(scoreLabel).expandX().padTop(10);
+        table.add(countdownLabel).expandX().padTop(10);
 
         stage.addActor(table);
+    }
+
+    public void update (float dt){
+        timeCount += dt;
+        if(timeCount >= 1) {
+            worldTimer --;
+            countdownLabel.setText(String.format("%03d", worldTimer));
+            timeCount = 0;
+        }
+    }
+    public static void updateScore (int value){
+        score += value;
+        scoreLabel.setText(String.format("%06d", score));
     }
 
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+
+    public void setTimeCount(Integer timeCount) {
+        this.timeCount = timeCount;
+    }
+
+    public Integer getLives() {
+        return lives;
+    }
+
+    public void setLives(Integer lives) {
+        this.lives = lives;
+    }
+
+    public Label getCountdownLabel() {
+        return countdownLabel;
+    }
+
+    public void setCountdownLabel(Label countdownLabel) {
+        this.countdownLabel = countdownLabel;
+    }
+
+    public Label getScoreLabel() {
+        return scoreLabel;
+    }
+
+    public void setScoreLabel(Label scoreLabel) {
+        this.scoreLabel = scoreLabel;
+    }
+
+    public Label getTimeLabel() {
+        return timeLabel;
+    }
+
+    public void setTimeLabel(Label timeLabel) {
+        this.timeLabel = timeLabel;
+    }
+
+    public Label getLivesLabel() {
+        return livesLabel;
+    }
+
+    public void setLivesLabel(Label livesLabel) {
+        this.livesLabel = livesLabel;
+    }
+
+    public Integer getWorldTimer() {
+        return worldTimer;
+    }
+
+    public void setWorldTimer(Integer worldTimer) {
+        this.worldTimer = worldTimer;
     }
 }

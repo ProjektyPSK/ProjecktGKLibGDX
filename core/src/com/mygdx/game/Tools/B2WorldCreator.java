@@ -18,10 +18,15 @@ import screen.PlayScreen;
 public class B2WorldCreator {
     public Array<EnemyShip> enemyShips;
     public Array<EnemyShip> enemyShipsStage2;
+    private TiledMap map;
+    private World world;
+    private PlayScreen screen;
 
     public B2WorldCreator(World world, TiledMap map, PlayScreen screen) {
         BodyDef bdef = new BodyDef();
-
+        this.map = map;
+        this.world = world;
+        this.screen = screen;
         PolygonShape shape = new PolygonShape();
         FixtureDef fdef = new FixtureDef();
         fdef.filter.categoryBits = Main.BORDER;
@@ -39,17 +44,12 @@ public class B2WorldCreator {
             fdef.filter.categoryBits = Main.BORDER;
             body.createFixture(fdef);
         }
-        //create body for enemys ships
-        enemyShips = new Array<EnemyShip>();
-        for (MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            enemyShips.add(new EnemyShip(world ,screen , rect.getX()  , rect.getY() ));
-        }
+    }
 
-        enemyShipsStage2 = new Array<EnemyShip>();
-        for (MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)) {
+    public void CreateNewWave (Array<EnemyShip> EnemyShip, int layer) {
+        for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            enemyShipsStage2.add(new EnemyShip(world ,screen , rect.getX()  , rect.getY() ));
+            EnemyShip.add(new EnemyShip(world, screen, rect.getX(), rect.getY()));
         }
     }
 
