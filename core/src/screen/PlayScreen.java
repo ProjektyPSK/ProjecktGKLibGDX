@@ -132,12 +132,12 @@ public class PlayScreen implements Screen {
     public void handleInput(float dt) {
 
         if (Gdx.input.isTouched() ) {
-            lastTouch = Gdx.input.getX() / Main.PPM * 1.1f;
-            if (((Gdx.input.getX() / Main.PPM * 1.1) > player.b2body.getPosition().x) && (Math.abs(lastTouch - player.b2body.getPosition().x) > 0.3)) {
+            lastTouch = Gdx.input.getX() / Main.PPM * 1.2f;
+            if (((Gdx.input.getX() / Main.PPM * 1.2) > player.b2body.getPosition().x) && (Math.abs(lastTouch - player.b2body.getPosition().x) > 0.3)) {
                 player.b2body.applyLinearImpulse(new Vector2(1f, 0), player.b2body.getWorldCenter(), true);
                 velocityShipX += 1f;
             }
-            if (((Gdx.input.getX() / Main.PPM * 1.1) < player.b2body.getPosition().x) && (Math.abs(lastTouch - player.b2body.getPosition().x) > 0.3)) {
+            if (((Gdx.input.getX() / Main.PPM * 1.2) < player.b2body.getPosition().x) && (Math.abs(lastTouch - player.b2body.getPosition().x) > 0.3)) {
                 player.b2body.applyLinearImpulse(new Vector2(-1f, 0), player.b2body.getWorldCenter(), true);
                 velocityShipX += -1f;
             }
