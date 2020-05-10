@@ -32,12 +32,16 @@ public class PlayScreen implements Screen {
     private OrthographicCamera gameCam;
     private Viewport gamePort;
 
+
     private TmxMapLoader mapLoader;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
     private Ship player;
     private TextureAtlas atlas;
     private float lastTouch;
+    private float velocityShipX;
+    private float velocityShipY;
+
 
     private World world;
     private Box2DDebugRenderer b2dr;
@@ -50,9 +54,10 @@ public class PlayScreen implements Screen {
     private Array<EnemyShip> enemyShips;
     private int waveCounter;
 
-    public PlayScreen (Main game){
+    public PlayScreen (Main game , World world){
         atlas= new TextureAtlas("BigSprite.atlas");
 
+        this.world=world;
         this.game=game;
         gameCam= new OrthographicCamera();
         gamePort = new FitViewport(Main.V_WIDTH / Main.PPM ,Main.V_HEIGHT / Main.PPM , gameCam);
@@ -64,7 +69,7 @@ public class PlayScreen implements Screen {
 
         gameCam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight()/2 , 0);
 
-        world = new World(new Vector2(0,0), true);
+
         b2dr = new Box2DDebugRenderer();
         player = new Ship(world, this);
 
@@ -83,6 +88,8 @@ public class PlayScreen implements Screen {
         enemyShips = new Array<>();
         creator.CreateNewWave(enemyShips, 2);
         waveCounter=1;
+        velocityShipX=0;
+        velocityShipX=0;
 
     }
     @Override
@@ -128,10 +135,11 @@ public class PlayScreen implements Screen {
             lastTouch = Gdx.input.getX() / Main.PPM * 1.1f;
             if (((Gdx.input.getX() / Main.PPM * 1.1) > player.b2body.getPosition().x) && (Math.abs(lastTouch - player.b2body.getPosition().x) > 0.3)) {
                 player.b2body.applyLinearImpulse(new Vector2(1f, 0), player.b2body.getWorldCenter(), true);
+                velocityShipX += 1f;
             }
             if (((Gdx.input.getX() / Main.PPM * 1.1) < player.b2body.getPosition().x) && (Math.abs(lastTouch - player.b2body.getPosition().x) > 0.3)) {
                 player.b2body.applyLinearImpulse(new Vector2(-1f, 0), player.b2body.getWorldCenter(), true);
-
+                velocityShipX += -1f;
             }
             if((player.getShootTime() <= lastHeroShotTimer) && (player.isCanShoot()) ) {
                 blasterList.add(new Blaster(world, this, player.getX() + player.getWidth() / 2, player.getY() + 1));
