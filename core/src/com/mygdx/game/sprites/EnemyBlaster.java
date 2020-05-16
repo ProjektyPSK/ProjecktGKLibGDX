@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Main;
 
@@ -19,17 +20,25 @@ public class EnemyBlaster extends Sprite {
     private boolean setToDestroy ;
     private boolean destroyed ;
     private float stateTime;
+    private float xPPM;
+    private float yPPM;
+    private float size;
+    private boolean growShrink;
 
     public EnemyBlaster (World world, PlayScreen screen, float x, float y){
         super(screen.getAtlas().findRegion("Enemy_blaster"));
         this.world = world;
+        xPPM = x/ Main.PPM;
+        yPPM = y/ Main.PPM;
+        size = 20;
         defineBlaster(x, y);
         shipNew = new TextureRegion(getTexture(),1,1,30,30);
-        setBounds(x/ Main.PPM,y/ Main.PPM,20 / Main.PPM,20 / Main.PPM);
+        setBounds(xPPM, yPPM, 20 / Main.PPM,20 / Main.PPM);
         setRegion(shipNew);
         setToDestroy = false;
         destroyed = false;
         stateTime=0;
+        growShrink=true;
     }
 
     public void update (float dt){
@@ -42,18 +51,32 @@ public class EnemyBlaster extends Sprite {
             destroyed = true;
         }
         else if (!destroyed){
-            setPosition(b2body.getPosition().x - getWidth() /2 , b2body.getPosition().y - getHeight() /2);
+            if(growShrink) {
+                size++;
+                setBounds(b2body.getPosition().x - getWidth() /2,b2body.getPosition().y - getHeight() /2, size / Main.PPM, size / Main.PPM);
+            }
+            if(!growShrink) {
+                size--;
+                setBounds(b2body.getPosition().x - getWidth() /2,b2body.getPosition().y - getHeight() /2, size / Main.PPM, size / Main.PPM);
+            }
 
+            if (size > 30)
+                growShrink = false;
+            if(size < 10)
+                growShrink = true;
+
+            }
         }
 
-
-    }
 
     public  void defineBlaster(float x, float y){
         BodyDef bdef = new BodyDef();
         bdef.position.set(x,y);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody((bdef));
+        MassData mass = new MassData();
+        mass.mass = 0.0001f;
+        b2body.setMassData(mass);
 
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
@@ -67,6 +90,17 @@ public class EnemyBlaster extends Sprite {
     public void draw(Batch batch){
         if(!destroyed || stateTime < 10)
             super.draw(batch);
+    }
+
+    public void setSetToDestroy(boolean setToDestroy) {
+        this.setToDestroy = setToDestroy;
+    }
+    public static void dispose(){
+        if (EnemyShip.getBlasterList().size() > 0) {
+            for (EnemyBlaster blaster : EnemyShip.getBlasterList()) {
+                blaster.setSetToDestroy(true);
+            }
+        }
     }
 
     public void colideWithEntiti(){

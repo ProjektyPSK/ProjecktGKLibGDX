@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.Main;
 import com.mygdx.game.sprites.Blaster;
+import com.mygdx.game.sprites.EnemyBlaster;
 import com.mygdx.game.sprites.EnemyShip;
 import com.mygdx.game.sprites.Ship;
 
@@ -21,8 +22,7 @@ public class WorldContactListener implements ContactListener {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
-    //    if (fixA == null || fixB == null) return;
-  //      if (fixA .getUserData() == null || fixB.getUserData() == null ) return;
+
 
         switch (cDef) {
 
@@ -43,7 +43,6 @@ public class WorldContactListener implements ContactListener {
                 if(fixA.getFilterData().categoryBits == Main.SHIP_ENEMY_BIT && ((EnemyShip) fixA.getUserData()).isCanShoot()) {
                     ((EnemyShip) fixA.getUserData()).colideWithEntiti();
                     ((Blaster) fixB.getUserData()).colideWithEntiti();
-
                 }
                 else if (fixB.getFilterData().categoryBits == Main.SHIP_ENEMY_BIT && ((EnemyShip) fixB.getUserData()).isCanShoot()) {
                     ((EnemyShip) fixB.getUserData()).colideWithEntiti();
@@ -51,8 +50,26 @@ public class WorldContactListener implements ContactListener {
 
                 }
                 break;
-        /*    case Main.SHIP_ENEMY_BIT | Main.SHIP_ENEMY_BIT:
-                ((EnemyShip) fixA.getUserData()).;*/
+            case Main.SHIP_HERO_BIT | Main.BLASTER_ENEMY:
+                if(fixA.getFilterData().categoryBits == Main.SHIP_HERO_BIT) {
+                    ((EnemyBlaster) fixB.getUserData()).colideWithEntiti();
+                    ((Ship) fixA.getUserData()).colideWithEntiti();
+                }
+                else if(fixB.getFilterData().categoryBits == Main.SHIP_HERO_BIT) {
+                    ((EnemyBlaster) fixA.getUserData()).colideWithEntiti();
+                    ((Ship) fixB.getUserData()).colideWithEntiti();
+                }
+                break;
+            case Main.SHIP_ENEMY_BIT | Main.SHIP_ENEMY_BIT:
+                if(fixA.getFilterData().categoryBits == Main.SHIP_HERO_BIT) {
+                    ((EnemyShip) fixB.getUserData()).colideWithEntiti();
+                    ((Ship) fixA.getUserData()).colideWithEntiti();
+                }
+                else if(fixB.getFilterData().categoryBits == Main.SHIP_HERO_BIT) {
+                    ((EnemyShip) fixA.getUserData()).colideWithEntiti();
+                    ((Ship) fixB.getUserData()).colideWithEntiti();
+                }
+                break;
 
 
             default:

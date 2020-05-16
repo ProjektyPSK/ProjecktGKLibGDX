@@ -29,6 +29,7 @@ public class MenuScreen implements Screen {
     TextureAtlas atlas;
     MenuButton play;
     MenuButton exit;
+
     private World world;
     private OrthographicCamera gameCam;
     private Viewport gamePort;
@@ -52,10 +53,8 @@ public class MenuScreen implements Screen {
 
 
 
-        play = new MenuButton(this,world, "Play", 1,1,440,160 , 500 ,500,BUTTON_BOUNDS_WIDTH,BUTTON_BOUNDS_HEIGHT , PLAY_X, PLAY_Y);
-        exit = new MenuButton(this,world, "Play", 443,1,440,160 , 500 ,500,BUTTON_BOUNDS_WIDTH,BUTTON_BOUNDS_HEIGHT, EXIT_X, EXIT_Y);
-
-
+        play = new MenuButton(this,world, "PLAY", 1,418,900,415 , 500 ,500,BUTTON_BOUNDS_WIDTH,BUTTON_BOUNDS_HEIGHT , PLAY_X, PLAY_Y);
+        exit = new MenuButton(this,world, "EXIT", 1,418,900,415 , 500 ,500,BUTTON_BOUNDS_WIDTH,BUTTON_BOUNDS_HEIGHT, EXIT_X, EXIT_Y);
 
     }
 
@@ -85,8 +84,8 @@ public class MenuScreen implements Screen {
             }
             if(Gdx.input.getX() > (EXIT_X / scalaX) - (BUTTON_BOUNDS_WIDTH / scalaX / 2)  &&
                     Gdx.input.getX() < (EXIT_X / scalaX) + (BUTTON_BOUNDS_WIDTH / scalaX / 2) &&
-                    screenHeight - Gdx.input.getY() < (EXIT_Y / scalaY) + (BUTTON_BOUNDS_HEIGHT/scalaY/2) &&
-                    screenHeight - Gdx.input.getY() > (EXIT_Y / scalaY) - (BUTTON_BOUNDS_HEIGHT/scalaY/2)){
+                    screenHeight - Gdx.input.getY() < (EXIT_Y / scalaY) + (BUTTON_BOUNDS_HEIGHT / scalaY / 2) &&
+                    screenHeight - Gdx.input.getY() > (EXIT_Y / scalaY) - (BUTTON_BOUNDS_HEIGHT / scalaY / 2)){
                 Gdx.app.exit();
 
             }
@@ -94,7 +93,7 @@ public class MenuScreen implements Screen {
 
 
         }
-        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClearColor(0.3f,0.5f,0.2f,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         ((Main) game).batch.setProjectionMatrix(gameCam.combined);
         ((Main) game).batch.begin();

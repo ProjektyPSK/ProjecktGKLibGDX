@@ -31,6 +31,7 @@ public class EnemyShip extends Sprite {
     private static List<EnemyBlaster> blasterList = new ArrayList<>();
     private PlayScreen screen;
     boolean canShoot;
+    boolean loadChecker;
 
 
     public EnemyShip(World world, PlayScreen screen, float x, float y){
@@ -50,7 +51,9 @@ public class EnemyShip extends Sprite {
 
     public void update (float dt, Ship player){
         if (setToDestroy && !destroyed){
-            Hud.updateScore(200);
+            if(loadChecker) {
+                Hud.updateScore(200);
+            }
             world.destroyBody(b2body);
             destroyed = true;
             screen.getEnemyShips().removeValue(this, true);
@@ -79,7 +82,7 @@ public class EnemyShip extends Sprite {
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
-        this.b2body.applyLinearImpulse(new Vector2(0, -0.4f), this.b2body.getWorldCenter(), true);
+        this.b2body.applyLinearImpulse(new Vector2(0, -0.6f), this.b2body.getWorldCenter(), true);
         canShoot = false;
     }
     public void shoot(float dt){
@@ -98,7 +101,7 @@ public class EnemyShip extends Sprite {
     public void movement(float dt, Ship player){
         movementTime += dt;
         if(movementTime  >= (rand.nextFloat() + 0.5f)) {
-            if (Math.abs(player.getY() - this.getY()) > 9)
+            if (Math.abs(player.getY() - this.getY()) > 8.5f)
                 this.b2body.setLinearVelocity(new Vector2(0, -1));
             else if (Math.abs(player.getY() - this.getY()) < 0.5f)
                 this.b2body.setLinearVelocity(new Vector2(0, 1));
@@ -120,9 +123,14 @@ public class EnemyShip extends Sprite {
     }
 
     public void colideWithEntiti(){
+        loadChecker = true;
             setToDestroy = true;
-
             }
+
+    public void setSetToDestroy(boolean setToDestroy) {
+        loadChecker = false;
+        this.setToDestroy = setToDestroy;
+    }
 
     public static List<EnemyBlaster> getBlasterList() {
         return blasterList;

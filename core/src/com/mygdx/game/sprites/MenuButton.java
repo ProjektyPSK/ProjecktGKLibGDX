@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Main;
 
 import screen.MenuScreen;
+import screen.PlayScreen;
 
 
 public class MenuButton extends Sprite {
@@ -28,22 +29,30 @@ public class MenuButton extends Sprite {
         setRegion(menu);
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
     }
+    public MenuButton(PlayScreen screen, World world, String region, int xAtlas, int yAtlas, int widthAtlas, int heightAtlas, int boundsX, int boundsY, float boundsWidth, float boundsHeight , float x, float y) {
+        super(screen.getMenuAtlas().findRegion(region));
+        this.world=world;
+        defineMenu(x,y);
+        menu = new TextureRegion(getTexture(), xAtlas, yAtlas, widthAtlas, heightAtlas);
+        setBounds(boundsX / Main.PPM, boundsY, boundsWidth, boundsHeight );
+        setRegion(menu);
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+    }
 
     public void update(float dt) {
-     //   setPosition(b2body.getPosition().x - getWidth() /2 , b2body.getPosition().y - getHeight() /2);
-        b2body.applyLinearImpulse(new Vector2(10f, 10f), this.b2body.getWorldCenter(), true);
     }
 
     public void defineMenu(float x, float y) {
         BodyDef bdef = new BodyDef();
         bdef.position.set(x , y);
-        bdef.type = BodyDef.BodyType.DynamicBody;
+        bdef.type = BodyDef.BodyType.StaticBody;
         b2body = world.createBody((bdef));
 
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(50);
-
+        shape.setRadius(1/Main.PPM);
+        fdef.filter.categoryBits = Main.MENU_BIT;
+        fdef.filter.maskBits = Main.DEFAULT;
         fdef.shape = shape;
         b2body.createFixture(fdef);
         b2body.createFixture(fdef).setUserData(this);

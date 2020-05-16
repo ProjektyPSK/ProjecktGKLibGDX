@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
+import com.mygdx.game.sprites.Ship;
 
 import java.awt.*;
 
@@ -22,18 +23,20 @@ public class Hud implements Disposable {
     private Integer worldTimer;
     private static Integer score;
     private float timeCount;
-    private Integer lives;
+    private static Integer lives;
 
     private Label countdownLabel;
     private static Label scoreLabel;
     private Label timeLabel;
-    private Label livesLabel;
+    private static Label livesLabel;
+    private Label livesTextLabel;
+    private Label scoreTextLabel;
 
-    public Hud(SpriteBatch sb){
+    public Hud(SpriteBatch sb, Ship player){
         worldTimer = 300;
         timeCount = 0;
         score = 0;
-        lives = 3;
+        lives = player.getLives();
 
         viewport = new FitViewport(Main.V_WIDTH  ,Main.V_HEIGHT  , new OrthographicCamera());
         stage = new Stage(viewport, sb);
@@ -45,11 +48,21 @@ public class Hud implements Disposable {
         countdownLabel = new Label(String.format("%03d", worldTimer), new Label.LabelStyle( new BitmapFont(), Color.WHITE));
         scoreLabel = new Label(String.format("%06d", score), new Label.LabelStyle( new BitmapFont(), Color.WHITE));
         timeLabel = new Label("TIME", new Label.LabelStyle( new BitmapFont(),Color.WHITE));
-        livesLabel = new Label("SCORE" , new Label.LabelStyle( new BitmapFont(), Color.WHITE));
+        scoreTextLabel = new Label("SCORE" , new Label.LabelStyle( new BitmapFont(), Color.WHITE));
+        livesTextLabel = new Label("LIVES" , new Label.LabelStyle( new BitmapFont(), Color.WHITE));
+        livesLabel = new Label(String.format("%02d", lives), new Label.LabelStyle( new BitmapFont(), Color.WHITE));
+        scoreLabel.setFontScale(2.5f);
+        countdownLabel.setFontScale(2.5f);
+        scoreTextLabel.setFontScale(2.5f);
+        timeLabel.setFontScale(2.5f);
+        livesLabel.setFontScale(2.5f);
+        livesTextLabel.setFontScale(2.5f);
 
-        table.add(livesLabel).expandX().padTop(10);
+        table.add(livesTextLabel).expandX().padTop(10);
+        table.add(scoreTextLabel).expandX().padTop(10);
         table.add(timeLabel).expandX().padTop(10);
         table.row();
+        table.add(livesLabel).expandX().padTop(10);
         table.add(scoreLabel).expandX().padTop(10);
         table.add(countdownLabel).expandX().padTop(10);
 
@@ -67,6 +80,11 @@ public class Hud implements Disposable {
     public static void updateScore (int value){
         score += value;
         scoreLabel.setText(String.format("%06d", score));
+    }
+    public static void updateLives (int value){
+        System.out.println("funkcja sie wywołała");
+        lives += value;
+        livesLabel.setText(String.format("%02d", lives));
     }
 
     @Override

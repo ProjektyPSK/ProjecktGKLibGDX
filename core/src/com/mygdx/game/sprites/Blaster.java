@@ -19,6 +19,8 @@ public class Blaster extends Sprite {
     private boolean setToDestroy ;
     private boolean destroyed ;
     private float stateTime;
+    private float size;
+    private boolean growShrink;
 
     public Blaster (World world, PlayScreen screen, float x, float y){
         super(screen.getAtlas().findRegion("Hero_blaster"));
@@ -30,10 +32,13 @@ public class Blaster extends Sprite {
         setToDestroy = false;
         destroyed = false;
         stateTime=0;
+        growShrink = true;
+        size = 20;
         setPosition(b2body.getPosition().x - getWidth() /2 , b2body.getPosition().y - getHeight() /2);
     }
 
     public void update (float dt){
+
     stateTime += dt;
     if (stateTime > 1.2f) {
         setToDestroy = true;
@@ -43,7 +48,19 @@ public class Blaster extends Sprite {
             destroyed = true;
         }
         else if (!destroyed){
-            setPosition(b2body.getPosition().x - getWidth() /2 , b2body.getPosition().y - getHeight() /2);
+            if(growShrink) {
+                size++;
+                setBounds(b2body.getPosition().x - getWidth() /2,b2body.getPosition().y - getHeight() /2, size / Main.PPM, size / Main.PPM);
+            }
+            if(!growShrink) {
+                size--;
+                setBounds(b2body.getPosition().x - getWidth() /2,b2body.getPosition().y - getHeight() /2, size / Main.PPM, size / Main.PPM);
+            }
+
+            if (size > 30)
+                growShrink = false;
+            if(size < 10)
+                growShrink = true;
 
         }
 
@@ -88,6 +105,10 @@ public class Blaster extends Sprite {
 
     public boolean isDestroyed() {
         return destroyed;
+    }
+
+    public void setSetToDestroy(boolean setToDestroy) {
+        this.setToDestroy = setToDestroy;
     }
 }
 

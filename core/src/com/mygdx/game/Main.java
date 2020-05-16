@@ -22,6 +22,7 @@ public class Main extends Game {
 	public  static final short BLASTER_HERO= 16;
 	public  static final short BLASTER_ENEMY= 32;
 	public  static final short BORDER= 64;
+	public  static final short MENU_BIT= 128;
 
 	public SpriteBatch batch;
 

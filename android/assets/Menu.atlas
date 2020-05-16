@@ -1,19 +1,50 @@
 
-Menu.png
+menu.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Play
+EXIT
   rotate: false
-  xy: 1, 1
-  size: 440, 160
-  orig: 440, 160
+  xy: 1, 418
+  size: 900, 415
+  orig: 900, 415
   offset: 0, 0
   index: -1
-Exit
+LOAD
   rotate: false
-  xy: 443, 1
-  size: 435, 160
-  orig: 435, 160
+  xy: 1, 1
+  size: 900, 415
+  orig: 900, 415
+  offset: 0, 0
+  index: -1
+
+menu2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+PLAY
+  rotate: false
+  xy: 1, 418
+  size: 900, 415
+  orig: 900, 415
+  offset: 0, 0
+  index: -1
+SAVE
+  rotate: false
+  xy: 1, 1
+  size: 900, 415
+  orig: 900, 415
+  offset: 0, 0
+  index: -1
+
+menu3.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+open_menu
+  rotate: false
+  xy: 1, 1
+  size: 512, 512
+  orig: 512, 512
   offset: 0, 0
   index: -1
