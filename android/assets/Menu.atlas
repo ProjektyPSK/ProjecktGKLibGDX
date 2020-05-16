@@ -1,5 +1,5 @@
 
-menu.png
+menu.PNG
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -18,7 +18,7 @@ LOAD
   offset: 0, 0
   index: -1
 
-menu2.png
+menu2.PNG
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -37,7 +37,7 @@ SAVE
   offset: 0, 0
   index: -1
 
-menu3.png
+menu3.PNG
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
