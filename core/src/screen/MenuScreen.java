@@ -43,7 +43,7 @@ public class MenuScreen implements Screen {
     public MenuScreen (Game game){
         this.game=game;
         world = new World(new Vector2(0,0), true);
-        atlas= new TextureAtlas("Menu.atlas");
+        atlas= new TextureAtlas("Menu.pack");
         viewport = new FitViewport(Main.V_WIDTH , Main.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport , ((Main) game).batch);
         b2dr = new Box2DDebugRenderer();

@@ -89,7 +89,7 @@ public class PlayScreen implements Screen {
 
     public PlayScreen (Main game , World world){
         atlas= new TextureAtlas("BigSprite.atlas");
-        menuAtlas= new TextureAtlas("Menu.atlas");
+        menuAtlas= new TextureAtlas("Menu.pack");
 
         this.world=world;
         this.game=game;
