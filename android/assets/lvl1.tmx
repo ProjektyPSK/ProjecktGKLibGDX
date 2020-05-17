@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.3" orientation="orthogonal" renderorder="right-up" width="30" height="500" tilewidth="70" tileheight="70" infinite="0" nextlayerid="16" nextobjectid="520">
+<map version="1.2" tiledversion="1.3.3" orientation="orthogonal" renderorder="right-up" width="30" height="500" tilewidth="70" tileheight="70" infinite="0" nextlayerid="17" nextobjectid="593">
  <tileset firstgid="1" name="Backround_ugly" tilewidth="2100" tileheight="1554" tilecount="1" columns="1">
   <image source="Backround_ugly.png" width="2100" height="1554"/>
  </tileset>
@@ -200,49 +200,7 @@
   <object id="420" x="1960" y="33600" width="70" height="70"/>
   <object id="421" x="1012.12" y="33602.7" width="70" height="70"/>
  </objectgroup>
- <objectgroup id="14" name="EnemysWave5" visible="0">
-  <object id="423" x="70" y="33600" width="70" height="70"/>
-  <object id="424" x="210" y="33600" width="70" height="70"/>
-  <object id="425" x="350" y="33600" width="70" height="70"/>
-  <object id="426" x="490" y="33600" width="70" height="70"/>
-  <object id="427" x="630" y="33600" width="70" height="70"/>
-  <object id="428" x="770" y="33600" width="70" height="70"/>
-  <object id="429" x="910" y="33600" width="70" height="70"/>
-  <object id="437" x="1960" y="33600" width="70" height="70"/>
-  <object id="438" x="1820" y="33600" width="70" height="70"/>
-  <object id="439" x="1680" y="33600" width="70" height="70"/>
-  <object id="440" x="1540" y="33600" width="70" height="70"/>
-  <object id="441" x="1400" y="33600" width="70" height="70"/>
-  <object id="442" x="1260" y="33600" width="70" height="70"/>
-  <object id="443" x="1120" y="33600" width="70" height="70"/>
-  <object id="445" x="910" y="33460" width="70" height="70"/>
-  <object id="446" x="1120" y="33460" width="70" height="70"/>
-  <object id="448" x="910" y="33320" width="70" height="70"/>
-  <object id="449" x="1120" y="33320" width="70" height="70"/>
-  <object id="450" x="770" y="33320" width="70" height="70"/>
-  <object id="451" x="630" y="33320" width="70" height="70"/>
-  <object id="452" x="490" y="33320" width="70" height="70"/>
-  <object id="453" x="350" y="33320" width="70" height="70"/>
-  <object id="454" x="210" y="33320" width="70" height="70"/>
-  <object id="455" x="70" y="33320" width="70" height="70"/>
-  <object id="456" x="1260" y="33320" width="70" height="70"/>
-  <object id="457" x="1400" y="33320" width="70" height="70"/>
-  <object id="458" x="1540" y="33320" width="70" height="70"/>
-  <object id="459" x="1680" y="33320" width="70" height="70"/>
-  <object id="460" x="1820" y="33320" width="70" height="70"/>
-  <object id="461" x="1960" y="33320" width="70" height="70"/>
-  <object id="462" x="1960" y="33460" width="70" height="70"/>
-  <object id="463" x="70" y="33460" width="70" height="70"/>
-  <object id="464" x="1330" y="33460" width="70" height="70"/>
-  <object id="465" x="1470" y="33460" width="70" height="70"/>
-  <object id="466" x="1610" y="33460" width="70" height="70"/>
-  <object id="467" x="1750" y="33460" width="70" height="70"/>
-  <object id="468" x="700" y="33460" width="70" height="70"/>
-  <object id="469" x="560" y="33460" width="70" height="70"/>
-  <object id="470" x="420" y="33460" width="70" height="70"/>
-  <object id="471" x="280" y="33460" width="70" height="70"/>
- </objectgroup>
- <objectgroup id="15" name="EnemysWave6">
+ <objectgroup id="15" name="EnemysWave5" visible="0">
   <object id="474" x="142.424" y="33605.8" width="70" height="70"/>
   <object id="475" x="210" y="33530" width="70" height="70"/>
   <object id="476" x="280" y="33460" width="70" height="70"/>
@@ -283,5 +241,96 @@
   <object id="516" x="1190" y="33250" width="70" height="70"/>
   <object id="517" x="1330" y="33250" width="70" height="70"/>
   <object id="519" x="1190" y="33390" width="70" height="70"/>
+ </objectgroup>
+ <objectgroup id="14" name="EnemysWave6" visible="0">
+  <object id="423" x="70" y="33600" width="70" height="70"/>
+  <object id="425" x="350" y="33600" width="70" height="70"/>
+  <object id="427" x="630" y="33600" width="70" height="70"/>
+  <object id="429" x="910" y="33600" width="70" height="70"/>
+  <object id="437" x="1960" y="33600" width="70" height="70"/>
+  <object id="439" x="1680" y="33600" width="70" height="70"/>
+  <object id="441" x="1400" y="33600" width="70" height="70"/>
+  <object id="443" x="1120" y="33600" width="70" height="70"/>
+  <object id="448" x="910" y="33320" width="70" height="70"/>
+  <object id="449" x="1120" y="33320" width="70" height="70"/>
+  <object id="451" x="630" y="33320" width="70" height="70"/>
+  <object id="453" x="350" y="33320" width="70" height="70"/>
+  <object id="455" x="70" y="33320" width="70" height="70"/>
+  <object id="457" x="1400" y="33320" width="70" height="70"/>
+  <object id="459" x="1680" y="33320" width="70" height="70"/>
+  <object id="461" x="1960" y="33320" width="70" height="70"/>
+  <object id="561" x="1330" y="33530" width="70" height="70"/>
+  <object id="562" x="1260" y="33460" width="70" height="70"/>
+  <object id="563" x="1190" y="33390" width="70" height="70"/>
+  <object id="564" x="1330" y="33390" width="70" height="70"/>
+  <object id="565" x="1190" y="33530" width="70" height="70"/>
+  <object id="566" x="1470" y="33530" width="70" height="70"/>
+  <object id="567" x="1540" y="33460" width="70" height="70"/>
+  <object id="568" x="1610" y="33390" width="70" height="70"/>
+  <object id="569" x="1470" y="33390" width="70" height="70"/>
+  <object id="570" x="1610" y="33530" width="70" height="70"/>
+  <object id="571" x="1750" y="33530" width="70" height="70"/>
+  <object id="572" x="1820" y="33460" width="70" height="70"/>
+  <object id="573" x="1750" y="33390" width="70" height="70"/>
+  <object id="574" x="1890" y="33390" width="70" height="70"/>
+  <object id="575" x="1890" y="33530" width="70" height="70"/>
+  <object id="576" x="840" y="33530" width="70" height="70"/>
+  <object id="577" x="770" y="33460" width="70" height="70"/>
+  <object id="578" x="700" y="33390" width="70" height="70"/>
+  <object id="579" x="840" y="33390" width="70" height="70"/>
+  <object id="580" x="700" y="33530" width="70" height="70"/>
+  <object id="581" x="560" y="33530" width="70" height="70"/>
+  <object id="582" x="490" y="33460" width="70" height="70"/>
+  <object id="583" x="420" y="33390" width="70" height="70"/>
+  <object id="584" x="420" y="33530" width="70" height="70"/>
+  <object id="585" x="560" y="33390" width="70" height="70"/>
+  <object id="586" x="280" y="33530" width="70" height="70"/>
+  <object id="587" x="210" y="33460" width="70" height="70"/>
+  <object id="588" x="280" y="33390" width="70" height="70"/>
+  <object id="589" x="140" y="33390" width="70" height="70"/>
+  <object id="590" x="140" y="33530" width="70" height="70"/>
+ </objectgroup>
+ <objectgroup id="16" name="EnemysWave7">
+  <object id="520" x="70" y="33600" width="70" height="70"/>
+  <object id="521" x="70" y="33460" width="70" height="70"/>
+  <object id="522" x="70" y="33320" width="70" height="70"/>
+  <object id="523" x="210" y="33250" width="70" height="70"/>
+  <object id="524" x="350" y="33250" width="70" height="70"/>
+  <object id="525" x="490" y="33250" width="70" height="70"/>
+  <object id="526" x="630" y="33250" width="70" height="70"/>
+  <object id="527" x="280" y="33320" width="70" height="70"/>
+  <object id="528" x="350" y="33390" width="70" height="70"/>
+  <object id="529" x="420" y="33460" width="70" height="70"/>
+  <object id="530" x="490" y="33530" width="70" height="70"/>
+  <object id="531" x="560" y="33600" width="70" height="70"/>
+  <object id="532" x="630" y="33530" width="70" height="70"/>
+  <object id="533" x="700" y="33460" width="70" height="70"/>
+  <object id="534" x="770" y="33390" width="70" height="70"/>
+  <object id="535" x="840" y="33320" width="70" height="70"/>
+  <object id="536" x="910" y="33250" width="70" height="70"/>
+  <object id="537" x="770" y="33250" width="70" height="70"/>
+  <object id="538" x="1960" y="33320" width="70" height="70"/>
+  <object id="539" x="1960" y="33460" width="70" height="70"/>
+  <object id="540" x="1960" y="33600" width="70" height="70"/>
+  <object id="541" x="1820" y="33250" width="70" height="70"/>
+  <object id="542" x="1680" y="33250" width="70" height="70"/>
+  <object id="543" x="1750" y="33320" width="70" height="70"/>
+  <object id="544" x="1680" y="33390" width="70" height="70"/>
+  <object id="545" x="1610" y="33460" width="70" height="70"/>
+  <object id="546" x="1540" y="33530" width="70" height="70"/>
+  <object id="547" x="1470" y="33600" width="70" height="70"/>
+  <object id="548" x="1400" y="33530" width="70" height="70"/>
+  <object id="549" x="1330" y="33460" width="70" height="70"/>
+  <object id="550" x="1260" y="33390" width="70" height="70"/>
+  <object id="551" x="1190" y="33320" width="70" height="70"/>
+  <object id="552" x="1120" y="33250" width="70" height="70"/>
+  <object id="553" x="1260" y="33250" width="70" height="70"/>
+  <object id="554" x="1400" y="33250" width="70" height="70"/>
+  <object id="555" x="1540" y="33250" width="70" height="70"/>
+  <object id="556" x="980" y="33600" width="70" height="70"/>
+  <object id="557" x="1120" y="33530" width="70" height="70"/>
+  <object id="558" x="980" y="33460" width="70" height="70"/>
+  <object id="559" x="1120" y="33390" width="70" height="70"/>
+  <object id="560" x="980" y="33320" width="70" height="70"/>
  </objectgroup>
 </map>
