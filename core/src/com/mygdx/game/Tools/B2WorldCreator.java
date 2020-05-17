@@ -11,7 +11,11 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
+import com.mygdx.game.sprites.Background;
 import com.mygdx.game.sprites.EnemyShip;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import screen.PlayScreen;
 
@@ -33,7 +37,7 @@ public class B2WorldCreator {
         Body body;
 
         // Create body for borders
-        for (MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             bdef.type = BodyDef.BodyType.StaticBody;
             bdef.position.set(rect.getX() / Main.PPM + rect.getWidth() / 2 / Main.PPM, rect.getY() / Main.PPM + rect.getHeight() / 2 / Main.PPM);
@@ -44,8 +48,17 @@ public class B2WorldCreator {
             fdef.filter.categoryBits = Main.BORDER;
             body.createFixture(fdef);
         }
-    }
 
+
+    }
+    public List<Background> createBackground (int layer, String path){
+        List<Background> background = new ArrayList<>();
+        for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+           background.add(new Background(world, screen, rect.getX(), rect.getY() , layer, path));
+        }
+        return background;
+    }
     public void CreateNewWave (Array<EnemyShip> EnemyShip, int layer) {
         for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();

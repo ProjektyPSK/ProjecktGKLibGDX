@@ -78,7 +78,7 @@ public class EnemyShip extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(35 / Main.PPM);
         fdef.filter.categoryBits = Main.SHIP_ENEMY_BIT;
-        fdef.filter.maskBits = Main.DEFAULT | Main.BORDER | Main.SHIP_ENEMY_BIT | Main.SHIP_HERO_BIT | Main.BLASTER_HERO;
+        fdef.filter.maskBits =  Main.BORDER | Main.SHIP_ENEMY_BIT | Main.SHIP_HERO_BIT | Main.BLASTER_HERO;
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);

@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
 import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.WorldContactListener;
+import com.mygdx.game.sprites.Background;
 import com.mygdx.game.sprites.Blaster;
 import com.mygdx.game.sprites.EnemyBlaster;
 import com.mygdx.game.sprites.EnemyShip;
@@ -85,6 +86,7 @@ public class PlayScreen implements Screen {
     float screenHeight;
     float screenWidth;
     int beginWaveScore;
+    List <Background> background;
 
 
     public PlayScreen (Main game , World world){
@@ -94,7 +96,7 @@ public class PlayScreen implements Screen {
         this.world=world;
         this.game=game;
         gameCam= new OrthographicCamera();
-        gamePort = new StretchViewport(Main.V_WIDTH / Main.PPM ,Main.V_HEIGHT / Main.PPM , gameCam);
+        gamePort = new StretchViewport(Main.V_WIDTH / 30 ,Main.V_HEIGHT / 30 , gameCam);
         player = new Ship(world, this, game);
         hud = new Hud(game.batch , player);
 
@@ -121,7 +123,18 @@ public class PlayScreen implements Screen {
 
         lastHeroShotTimer =0;
         enemyShips = new Array<>();
-        creator.CreateNewWave(enemyShips, 2);
+        creator.CreateNewWave(enemyShips, 4);
+        List <Background> backgroundtmp;
+        background = creator.createBackground(0,"bacground1.png");
+       backgroundtmp = creator.createBackground(1,"bacground2.png");
+        for (Background bac: backgroundtmp){
+            background.add(bac);
+        }
+        backgroundtmp = creator.createBackground(2,"bacground3.png");
+        for (Background bac: backgroundtmp){
+            background.add(bac);
+        }
+
         waveCounter=1;
         menuActive=false;
         pauseActive = true;
@@ -147,11 +160,12 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         renderer.render();
         // POKAZUJE GRANICE OBIEKTU
-       // b2dr.render(world, gameCam.combined);
+        b2dr.render(world, gameCam.combined);
         game.batch.setProjectionMatrix(gameCam.combined);
         drawBatch();
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
+
     }
 
     public void update(float dt) {
@@ -165,11 +179,16 @@ public class PlayScreen implements Screen {
         handleInput(dt);
         gameCam.update();
         renderer.setView(gameCam);
+
     }
 
     public void drawBatch(){
         game.batch.begin();
+        for (Background bac : background) {
+            bac.draw(game.batch);
+        }
         player.draw(game.batch);
+
         for (EnemyShip enemy : enemyShips) {
             enemy.draw(game.batch);
         }
@@ -181,6 +200,7 @@ public class PlayScreen implements Screen {
                 blaster.draw(game.batch);
             }
         }
+
         openMenu.draw(game.batch);
         if(menuActive){
             resume.draw(game.batch);
@@ -314,12 +334,18 @@ public class PlayScreen implements Screen {
         moveShipChecker();
         updateEnemiesWave(dt);
 
+        backgroundChecker();
         for (Blaster blaster : blasterList) {
             blaster.update(dt);
         }
         if (EnemyShip.getBlasterList().size() > 0) {
             for (EnemyBlaster blaster : EnemyShip.getBlasterList()) {
                 blaster.update(dt);
+            }
+        }
+        if(background.size() > 0){
+            for(Background bac: background){
+                bac.update(dt);
             }
         }
         updateBlasterList();
@@ -332,15 +358,15 @@ public class PlayScreen implements Screen {
             enemy.update(dt , player);
             if (enemyShips.size < 1){
                 switch (waveCounter){
-                    case 0: creator.CreateNewWave(enemyShips, 2);
+                    case 0: creator.CreateNewWave(enemyShips, 4);
                         player.setCanShoot(false);
                         beginWaveScore = hud.getScore();
                         break;
-                    case 1: creator.CreateNewWave(enemyShips, 3);
+                    case 1: creator.CreateNewWave(enemyShips, 5);
                         player.setCanShoot(false);
                         beginWaveScore = hud.getScore();
                         break;
-                    case 2: creator.CreateNewWave(enemyShips, 4);
+                    case 2: creator.CreateNewWave(enemyShips, 6);
                         player.setCanShoot(false);
                         beginWaveScore = hud.getScore();
                         break;
@@ -367,6 +393,9 @@ public class PlayScreen implements Screen {
                     blaster.b2body.setLinearVelocity(0f,0f);
                 }
             }
+            for (Background bac: background){
+                bac.b2body.setLinearVelocity(0f,0f);
+            }
             pauseActive=false;
         }
         if(!menuActive && !pauseActive){
@@ -379,6 +408,20 @@ public class PlayScreen implements Screen {
                 for (EnemyBlaster blaster : EnemyShip.getBlasterList()) {
                     blaster.b2body.setLinearVelocity(0f,-2f);
                 }
+            }
+            for (Background bac: background){
+                switch (bac.getLayer()){
+                    case 0 :
+                        bac.b2body.applyLinearImpulse(new Vector2(0, -1.0f), bac.b2body.getWorldCenter(), true);
+                        break;
+                    case 1 :
+                        bac.b2body.applyLinearImpulse(new Vector2(0, -2.0f), bac.b2body.getWorldCenter(), true);
+                        break;
+                    case 2 :
+                        bac.b2body.applyLinearImpulse(new Vector2(0, -3.0f), bac.b2body.getWorldCenter(), true);
+                        break;
+                }
+
             }
             pauseActive = true;
         }
@@ -413,6 +456,18 @@ public class PlayScreen implements Screen {
         Hud.updateScore(Integer.parseInt(in.nextLine()));
 
     }
+    public void backgroundChecker (){
+        if(background.size() > 0){
+            for (Background bac : background){
+                if (bac.b2body.getTransform().getPosition().y < -17.5f){
+                    bac.b2body.setTransform(bac.b2body.getPosition().x, 17.47f, 0);
+                    System.out.println("Warunek spelniony");
+                }
+
+            }
+        }
+    }
+
 
     @Override
     public void resize(int width, int height) {
