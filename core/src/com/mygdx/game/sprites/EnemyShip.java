@@ -25,6 +25,7 @@ public class EnemyShip extends Sprite {
     private boolean setToDestroy ;
     private boolean destroyed ;
     private float movementTime;
+    private float diveTime;
     private float shootTime;
     private Random rand;
     private EnemyBlaster blaster;
@@ -46,6 +47,7 @@ public class EnemyShip extends Sprite {
         setToDestroy = false;
         destroyed = false;
         movementTime = 0;
+        diveTime = 0;
 
     }
 
@@ -100,6 +102,7 @@ public class EnemyShip extends Sprite {
     }
     public void movement(float dt, Ship player){
         movementTime += dt;
+        diveTime += dt;
         if(movementTime  >= (rand.nextFloat() + 0.5f)) {
             if (Math.abs(player.getY() - this.getY()) > 8.5f)
                 this.b2body.setLinearVelocity(new Vector2(0, -1));
@@ -113,7 +116,7 @@ public class EnemyShip extends Sprite {
             }
                 movementTime = 0;
         }
-
+        if (diveTime >= (rand.nextInt(1000) ) + 3)
     }
 
 
