@@ -82,7 +82,6 @@ public class Hud implements Disposable {
         scoreLabel.setText(String.format("%06d", score));
     }
     public static void updateLives (int value){
-        System.out.println("funkcja sie wywołała");
         lives += value;
         livesLabel.setText(String.format("%02d", lives));
     }
