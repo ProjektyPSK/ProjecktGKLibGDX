@@ -101,6 +101,8 @@ public class EnemyShip extends Sprite {
         fdef.filter.maskBits =  Main.BORDER | Main.SHIP_ENEMY_BIT | Main.SHIP_HERO_BIT | Main.BLASTER_HERO;
         else if (movementType == 1)
             fdef.filter.maskBits = Main.SHIP_ENEMY_BIT | Main.SHIP_HERO_BIT | Main.BLASTER_HERO;
+        else if (movementType == 2)
+            fdef.filter.maskBits =  Main.SHIP_HERO_BIT | Main.BLASTER_HERO;
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
         this.b2body.applyLinearImpulse(new Vector2(0, -0.6f), this.b2body.getWorldCenter(), true);
@@ -181,7 +183,6 @@ if(movementType == 1){
         moveRight = false;
         moveDown = true;
         movementTime = 0;
-        System.out.println("Wywolala sie funkcja ruch w dol");
     }
     if(movementTime > 2f && moveDown) {
         moveLeftOrRight ++;
@@ -196,25 +197,30 @@ if(movementType == 1){
             moveLeftOrRight = 0;
         }
         movementTime = 0;
-        System.out.println("Wywolala sie funkcja ruch w prawo");
     }
     if(movementTime > 1f && moveLeft) {
         this.b2body.setLinearVelocity(new Vector2(-1f, 0));
         moveLeft = false;
         moveDown = true;
         movementTime = 0;
-        System.out.println("Wywolala sie funkcja ruch w lewo");
     }
     if (b2body.getTransform().getPosition().y < -1.0f) {
         b2body.setTransform(b2body.getPosition().x, 11f, 0);
     }
 
 }
-
-
-
+if(movementType == 2) {
+    if (movementTime < 7f)
+        this.b2body.setLinearVelocity(new Vector2(0, -1));
+    else {
+        this.b2body.setLinearVelocity(new Vector2(2.5f, 0));
+        if (b2body.getTransform().getPosition().x > 21.5f) {
+            b2body.setTransform(-0.5f, b2body.getPosition().y, 0);
+        }
     }
 
+}
+    }
 
     public void draw(Batch batch){
         if(!destroyed)

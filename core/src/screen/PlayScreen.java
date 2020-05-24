@@ -120,7 +120,7 @@ public class PlayScreen implements Screen {
 
         lastHeroShotTimer =0;
         enemyShips = new Array<>();
-        creator.CreateNewWave(enemyShips, 4, (short) 1);
+        creator.CreateNewWave(enemyShips, 4, (short) 2);
         List <Background> backgroundtmp;
         background = creator.createBackground(0,"bacground1.png");
        backgroundtmp = creator.createBackground(1,"bacground2.png");
@@ -358,19 +358,19 @@ public class PlayScreen implements Screen {
             enemy.update(dt , player);
             if (enemyShips.size < 1){
                 switch (waveCounter){
-                    case 0: creator.CreateNewWave(enemyShips, 4, (short) 1);
+                    case 0: creator.CreateNewWave(enemyShips, 4, (short) 2);
                         player.setCanShoot(false);
                         beginWaveScore = hud.getScore();
                         break;
-                    case 1: creator.CreateNewWave(enemyShips, 5, (short) 0);
+                    case 1: creator.CreateNewWave(enemyShips, 5, (short) 1);
                         player.setCanShoot(false);
                         beginWaveScore = hud.getScore();
                         break;
-                    case 2: creator.CreateNewWave(enemyShips, 6, (short) 1);
+                    case 2: creator.CreateNewWave(enemyShips, 6, (short) 0);
                         player.setCanShoot(false);
                         beginWaveScore = hud.getScore();
                         break;
-                    case 3: creator.CreateNewWave(enemyShips, 7, (short) 0);
+                    case 3: creator.CreateNewWave(enemyShips, 7, (short) 2);
                         player.setCanShoot(false);
                         beginWaveScore = hud.getScore();
                         break;
