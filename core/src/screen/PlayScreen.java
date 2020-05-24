@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -119,7 +120,7 @@ public class PlayScreen implements Screen {
 
         lastHeroShotTimer =0;
         enemyShips = new Array<>();
-        creator.CreateNewWave(enemyShips, 4);
+        creator.CreateNewWave(enemyShips, 4, (short) 1);
         List <Background> backgroundtmp;
         background = creator.createBackground(0,"bacground1.png");
        backgroundtmp = creator.createBackground(1,"bacground2.png");
@@ -224,6 +225,9 @@ public class PlayScreen implements Screen {
                 if ((player.getShootTime() <= lastHeroShotTimer) && (player.isCanShoot())) {
                     blasterList.add(new Blaster(world, this, player.getX() + player.getWidth() / 2, player.getY() + 1));
                     blasterList.get(blasterList.size() - 1).b2body.applyLinearImpulse(new Vector2(0, 10f), blasterList.get(blasterList.size() - 1).b2body.getWorldCenter(), true);
+                    MassData mass = new MassData();
+                    mass.mass = 0.0001f;
+                    blasterList.get(blasterList.size() - 1).b2body.setMassData(mass);
                     lastHeroShotTimer = 0;
                 }
                 // AKCJA PRZYCISKU OTWIERANIA MENU
@@ -354,31 +358,31 @@ public class PlayScreen implements Screen {
             enemy.update(dt , player);
             if (enemyShips.size < 1){
                 switch (waveCounter){
-                    case 0: creator.CreateNewWave(enemyShips, 4);
+                    case 0: creator.CreateNewWave(enemyShips, 4, (short) 1);
                         player.setCanShoot(false);
                         beginWaveScore = hud.getScore();
                         break;
-                    case 1: creator.CreateNewWave(enemyShips, 5);
+                    case 1: creator.CreateNewWave(enemyShips, 5, (short) 0);
                         player.setCanShoot(false);
                         beginWaveScore = hud.getScore();
                         break;
-                    case 2: creator.CreateNewWave(enemyShips, 6);
+                    case 2: creator.CreateNewWave(enemyShips, 6, (short) 1);
                         player.setCanShoot(false);
                         beginWaveScore = hud.getScore();
                         break;
-                    case 3: creator.CreateNewWave(enemyShips, 7);
+                    case 3: creator.CreateNewWave(enemyShips, 7, (short) 0);
                         player.setCanShoot(false);
                         beginWaveScore = hud.getScore();
                         break;
-                    case 4: creator.CreateNewWave(enemyShips, 8);
+                    case 4: creator.CreateNewWave(enemyShips, 8, (short) 1);
                         player.setCanShoot(false);
                         beginWaveScore = hud.getScore();
                         break;
-                    case 5: creator.CreateNewWave(enemyShips, 9);
+                    case 5: creator.CreateNewWave(enemyShips, 9,(short) 0);
                         player.setCanShoot(false);
                         beginWaveScore = hud.getScore();
                         break;
-                    case 5: creator.CreateNewWave(enemyShips, 10);
+                    case 6: creator.CreateNewWave(enemyShips, 10, (short) 1);
                         player.setCanShoot(false);
                         beginWaveScore = hud.getScore();
                         break;
@@ -473,7 +477,6 @@ public class PlayScreen implements Screen {
             for (Background bac : background){
                 if (bac.b2body.getTransform().getPosition().y < -17.5f){
                     bac.b2body.setTransform(bac.b2body.getPosition().x, 17.47f, 0);
-                    System.out.println("Warunek spelniony");
                 }
 
             }

@@ -40,11 +40,11 @@ public class WorldContactListener implements ContactListener {
                 }
                 break;
             case Main.SHIP_ENEMY_BIT | Main.BLASTER_HERO:
-                if(fixA.getFilterData().categoryBits == Main.SHIP_ENEMY_BIT && ((EnemyShip) fixA.getUserData()).isCanShoot()) {
+                if(fixA.getFilterData().categoryBits == Main.SHIP_ENEMY_BIT ) {
                     ((EnemyShip) fixA.getUserData()).colideWithEntiti();
                     ((Blaster) fixB.getUserData()).colideWithEntiti();
                 }
-                else if (fixB.getFilterData().categoryBits == Main.SHIP_ENEMY_BIT && ((EnemyShip) fixB.getUserData()).isCanShoot()) {
+                else if (fixB.getFilterData().categoryBits == Main.SHIP_ENEMY_BIT ) {
                     ((EnemyShip) fixB.getUserData()).colideWithEntiti();
                     ((Blaster) fixA.getUserData()).colideWithEntiti();
 

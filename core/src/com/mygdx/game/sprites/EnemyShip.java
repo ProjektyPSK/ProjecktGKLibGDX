@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Main;
 
@@ -28,18 +29,24 @@ public class EnemyShip extends Sprite {
     private float diveTime;
     private float shootTime;
     private Random rand;
-    private EnemyBlaster blaster;
     private static List<EnemyBlaster> blasterList = new ArrayList<>();
     private PlayScreen screen;
-    boolean canShoot;
-    boolean loadChecker;
+    private boolean canShoot;
+    private boolean loadChecker;
+    private boolean diving;
+    short movementType;
+    private boolean moveLeft;
+    private boolean moveRight;
+    private boolean moveDown;
+    private short moveLeftOrRight;
 
 
-    public EnemyShip(World world, PlayScreen screen, float x, float y){
+    public EnemyShip(World world, PlayScreen screen, float x, float y, short movementType){
         super(screen.getAtlas().findRegion("SpaceShipEnemy"));
         rand = new Random();
         this.world = world;
         this.screen = screen;
+        this.movementType = movementType;
         defineShip(x, y);
         shipNew = new TextureRegion(getTexture(),73,33,70,70);
         setBounds(x/ Main.PPM,y/ Main.PPM,70 / Main.PPM,70 / Main.PPM);
@@ -47,14 +54,24 @@ public class EnemyShip extends Sprite {
         setToDestroy = false;
         destroyed = false;
         movementTime = 0;
-        diveTime = 0;
 
+        if(movementType == 0) {
+            diveTime = 5;
+            diving = false;
+        }
+
+        if(movementType == 1) {
+            moveLeft = false;
+            moveRight = true;
+            moveDown = false;
+            moveLeftOrRight = 1;
+        }
     }
 
     public void update (float dt, Ship player){
         if (setToDestroy && !destroyed){
             if(loadChecker) {
-                Hud.updateScore(200);
+                Hud.updateScore(20);
             }
             world.destroyBody(b2body);
             destroyed = true;
@@ -80,8 +97,10 @@ public class EnemyShip extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(35 / Main.PPM);
         fdef.filter.categoryBits = Main.SHIP_ENEMY_BIT;
+        if (movementType == 0)
         fdef.filter.maskBits =  Main.BORDER | Main.SHIP_ENEMY_BIT | Main.SHIP_HERO_BIT | Main.BLASTER_HERO;
-
+        else if (movementType == 1)
+            fdef.filter.maskBits = Main.SHIP_ENEMY_BIT | Main.SHIP_HERO_BIT | Main.BLASTER_HERO;
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
         this.b2body.applyLinearImpulse(new Vector2(0, -0.6f), this.b2body.getWorldCenter(), true);
@@ -96,27 +115,104 @@ public class EnemyShip extends Sprite {
            shootTime = 0;
         }
         shootTime += dt;
-        if (shootTime > 4){
+        if (shootTime > 4 && !diving){
             this.canShoot=true;
         }
     }
     public void movement(float dt, Ship player){
         movementTime += dt;
-        diveTime += dt;
-        if(movementTime  >= (rand.nextFloat() + 0.5f)) {
-            if (Math.abs(player.getY() - this.getY()) > 8.5f)
-                this.b2body.setLinearVelocity(new Vector2(0, -1));
-            else if (Math.abs(player.getY() - this.getY()) < 0.5f)
-                this.b2body.setLinearVelocity(new Vector2(0, 1));
-            else {
-                float randX = (rand.nextFloat() - 0.5f) ;
-                float randY = (rand.nextFloat() - 0.5f) ;
+if(movementType == 0) {
+    if (movementTime >= (rand.nextFloat() + 0.5f) && !diving) {
+        if (Math.abs(player.getY() - this.getY()) > 8.5f)
+            this.b2body.setLinearVelocity(new Vector2(0, -1));
+        else if (Math.abs(player.getY() - this.getY()) < 0.5f)
+            this.b2body.setLinearVelocity(new Vector2(0, 1));
+        else {
+            float randX = (rand.nextFloat() - 0.5f);
+            float randY = (rand.nextFloat() - 0.5f);
 
-                this.b2body.setLinearVelocity(new Vector2(randX, randY));
-            }
-                movementTime = 0;
+            this.b2body.setLinearVelocity(new Vector2(randX, randY));
         }
-        if (diveTime >= (rand.nextInt(1000) ) + 3)
+        movementTime = 0;
+    }
+    if (diveTime >= (rand.nextInt(10000)) + 5) {
+        if (!diving) {
+            this.b2body.setLinearVelocity(new Vector2(0, -2));
+            b2body.destroyFixture(b2body.getFixtureList().get(0));
+
+            FixtureDef fdef = new FixtureDef();
+            CircleShape shape = new CircleShape();
+            shape.setRadius(35 / Main.PPM);
+
+            fdef.filter.categoryBits = Main.SHIP_ENEMY_BIT;
+            fdef.filter.maskBits = Main.BORDER | Main.SHIP_HERO_BIT | Main.BLASTER_HERO;
+            fdef.shape = shape;
+            b2body.createFixture(fdef).setUserData(this);
+            MassData mass = new MassData();
+            mass.mass = 0.0001f;
+            b2body.setMassData(mass);
+        }
+        diving = true;
+
+    }
+    if (b2body.getTransform().getPosition().y < -1.0f) {
+        b2body.setTransform(b2body.getPosition().x, 12f, 0);
+        diving = false;
+
+        b2body.destroyFixture(b2body.getFixtureList().get(0));
+
+        FixtureDef fdef = new FixtureDef();
+        CircleShape shape = new CircleShape();
+        shape.setRadius(35 / Main.PPM);
+
+        fdef.filter.categoryBits = Main.SHIP_ENEMY_BIT;
+        fdef.filter.maskBits = Main.BORDER | Main.SHIP_ENEMY_BIT | Main.SHIP_HERO_BIT | Main.BLASTER_HERO;
+        fdef.shape = shape;
+        b2body.createFixture(fdef).setUserData(this);
+        MassData mass = new MassData();
+        mass.mass = 1f;
+        b2body.setMassData(mass);
+
+    }
+}
+if(movementType == 1){
+    if(movementTime > 1f && moveRight && canShoot) {
+        this.b2body.setLinearVelocity(new Vector2(1f, 0));
+        moveRight = false;
+        moveDown = true;
+        movementTime = 0;
+        System.out.println("Wywolala sie funkcja ruch w dol");
+    }
+    if(movementTime > 2f && moveDown) {
+        moveLeftOrRight ++;
+        this.b2body.setLinearVelocity(new Vector2(0, -1f));
+        if(moveLeftOrRight == 1) {
+            moveRight = true;
+            moveDown = false;
+        }
+        if(moveLeftOrRight == 2){
+            moveLeft = true;
+            moveDown = false;
+            moveLeftOrRight = 0;
+        }
+        movementTime = 0;
+        System.out.println("Wywolala sie funkcja ruch w prawo");
+    }
+    if(movementTime > 1f && moveLeft) {
+        this.b2body.setLinearVelocity(new Vector2(-1f, 0));
+        moveLeft = false;
+        moveDown = true;
+        movementTime = 0;
+        System.out.println("Wywolala sie funkcja ruch w lewo");
+    }
+    if (b2body.getTransform().getPosition().y < -1.0f) {
+        b2body.setTransform(b2body.getPosition().x, 11f, 0);
+    }
+
+}
+
+
+
     }
 
 

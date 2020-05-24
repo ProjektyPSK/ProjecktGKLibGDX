@@ -59,10 +59,10 @@ public class B2WorldCreator {
         }
         return background;
     }
-    public void CreateNewWave (Array<EnemyShip> EnemyShip, int layer) {
+    public void CreateNewWave (Array<EnemyShip> EnemyShip, int layer, short movementType) {
         for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            EnemyShip.add(new EnemyShip(world, screen, rect.getX(), rect.getY()));
+            EnemyShip.add(new EnemyShip(world, screen, rect.getX(), rect.getY(), movementType));
         }
     }
 
