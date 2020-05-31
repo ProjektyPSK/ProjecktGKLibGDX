@@ -10,22 +10,29 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Main;
-import java.util.ArrayList;
-import java.util.List;
 import screen.PlayScreen;
 
+/**
+ * Jest odpowiedzialna za tworzenie dynamicznego tła
+ */
 public class Background extends Sprite {
     public World world;
     public Body b2body;
-    private static List<EnemyBlaster> blasterList = new ArrayList<>();
     private PlayScreen screen;
     boolean canShoot;
-    boolean loadChecker;
     int layer;
     float x;
     float y;
 
-
+    /**
+     *
+     * @param world
+     * @param screen
+     * @param x
+     * @param y
+     * @param layer warstwa tła, im bliżej środka tym większy numer warstwy
+     * @param path ścieszka do pliku z grafiką
+     */
     public Background(World world, PlayScreen screen, float x, float y, int layer , String path){
         super(new Texture(Gdx.files.internal(path)), 0, 0);
         this.world = world;
@@ -48,10 +55,20 @@ public class Background extends Sprite {
         }
     }
 
+    /**
+     * funkcja odpowiedzialna za "przyklejenie" sprite'a do ciała obiektu
+     * @param dt czas
+     */
     public void update (float dt){
         setPosition(b2body.getPosition().x   , b2body.getPosition().y  );
     }
 
+    /**
+     * Funkcja definiuje rozmiar ciała obiektu oraz nadaje mu prędkość w zależności od warstwy, na której leży
+     * @param x
+     * @param y
+     * @param layer warstwa tła, im bliżej środka tym większy numer warstwy
+     */
     public  void defineBacground(float x, float y, int layer){
         BodyDef bdef = new BodyDef();
         bdef.position.set(x / Main.PPM,y / Main.PPM);

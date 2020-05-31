@@ -15,6 +15,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
 import com.mygdx.game.sprites.MenuButton;
 
+import Scenes.Hud;
+
 public class MenuScreen implements Screen {
     private final float PLAY_X = 1000;
     private final float PLAY_Y = 800;
@@ -35,13 +37,17 @@ public class MenuScreen implements Screen {
     private Viewport gamePort;
     private float screenHeight = 1080;
     private float screenWidth = 2100;
+    private int tryb;
+    private Hud hud;
+
 
 
 
     private Game game;
 
-    public MenuScreen (Game game){
+    public MenuScreen (Game game, int tryb){
         this.game=game;
+        this.tryb = tryb;
         world = new World(new Vector2(0,0), true);
         atlas= new TextureAtlas("Menu.pack");
         viewport = new FitViewport(Main.V_WIDTH , Main.V_HEIGHT, new OrthographicCamera());
@@ -50,11 +56,11 @@ public class MenuScreen implements Screen {
         gameCam= new OrthographicCamera();
         gamePort = new FitViewport(Main.V_WIDTH  ,Main.V_HEIGHT , gameCam);
         gameCam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight()/2 , 0);
-
-
-
         play = new MenuButton(this,world, "PLAY", 1,418,900,415 , 500 ,500,BUTTON_BOUNDS_WIDTH,BUTTON_BOUNDS_HEIGHT , PLAY_X, PLAY_Y);
         exit = new MenuButton(this,world, "EXIT", 1,418,900,415 , 500 ,500,BUTTON_BOUNDS_WIDTH,BUTTON_BOUNDS_HEIGHT, EXIT_X, EXIT_Y);
+        if(tryb ==2 )
+        hud = new Hud(((Main) game).batch);
+
 
     }
 
@@ -68,6 +74,7 @@ public class MenuScreen implements Screen {
         b2dr.render(world, gameCam.combined);
         play.update(delta);
         exit.update(delta);
+
         if(Gdx.input.justTouched()){
             float maxScreenHeightFloat = Main.V_HEIGHT;
             float maxScreenWidthFloat = Main.V_WIDTH;
@@ -102,7 +109,11 @@ public class MenuScreen implements Screen {
         exit.draw(((Main) game).batch);
 
         ((Main) game).batch.end();
-
+        if(tryb ==2) {
+            ((Main) game).batch.setProjectionMatrix(hud.stage.getCamera().combined);
+            hud.stage.draw();
+            hud.update(delta);
+        }
     }
 
     @Override

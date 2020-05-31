@@ -13,6 +13,9 @@ import com.mygdx.game.Main;
 
 import screen.PlayScreen;
 
+/**
+ * Klasa odpowiedzialna za tworzenie obiektu pocisku przeciwnika
+ */
 public class EnemyBlaster extends Sprite {
     public World world;
     public Body b2body;
@@ -25,6 +28,13 @@ public class EnemyBlaster extends Sprite {
     private float size;
     private boolean growShrink;
 
+    /**
+     * Konstruktor, w którym określana jest grafika picisku oraz jego rozmiar i pozycja sprite
+     * @param world
+     * @param screen
+     * @param x
+     * @param y
+     */
     public EnemyBlaster (World world, PlayScreen screen, float x, float y){
         super(screen.getAtlas().findRegion("Enemy_blaster"));
         this.world = world;
@@ -32,7 +42,7 @@ public class EnemyBlaster extends Sprite {
         yPPM = y/ Main.PPM;
         size = 20;
         defineBlaster(x, y);
-        shipNew = new TextureRegion(getTexture(),1,1,30,30);
+        shipNew = new TextureRegion(getTexture(),73,113,30,30);
         setBounds(xPPM, yPPM, 20 / Main.PPM,20 / Main.PPM);
         setRegion(shipNew);
         setToDestroy = false;
@@ -41,6 +51,10 @@ public class EnemyBlaster extends Sprite {
         growShrink=true;
     }
 
+    /**
+     * Funckja odpowiedzialna za odświerzanie pozycji sprite oraz zmiany jego rozmiaru
+     * @param dt czas
+     */
     public void update (float dt){
         stateTime += dt;
         if (stateTime > 10) {
@@ -68,7 +82,11 @@ public class EnemyBlaster extends Sprite {
             }
         }
 
-
+    /**
+     * Funkcja określa zasady kolizcji rozmiar obiketu oraz jego pozycje
+     * @param x
+     * @param y
+     */
     public  void defineBlaster(float x, float y){
         BodyDef bdef = new BodyDef();
         bdef.position.set(x,y);
@@ -87,6 +105,10 @@ public class EnemyBlaster extends Sprite {
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
     }
+    /**
+     * Funkcja określa warunek do kiedy ma być on rysowany
+     * @param batch zbiór grafik
+     */
     public void draw(Batch batch){
         if(!destroyed || stateTime < 10)
             super.draw(batch);

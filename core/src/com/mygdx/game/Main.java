@@ -18,7 +18,7 @@ public class Main extends Game {
 	public  static final short DEFAULT= 1;
 	public  static final short SHIP_HERO_BIT= 2;
 	public  static final short SHIP_ENEMY_BIT= 4;
-	public  static final short ASTEROID= 8;
+	public  static final short UPGRADE_BIT= 8;
 	public  static final short BLASTER_HERO= 16;
 	public  static final short BLASTER_ENEMY= 32;
 	public  static final short BORDER= 64;
@@ -29,7 +29,7 @@ public class Main extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		setScreen(new MenuScreen(this));
+		setScreen(new MenuScreen(this,1));
 	}
 
 	@Override

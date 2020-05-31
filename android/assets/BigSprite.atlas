@@ -3,37 +3,51 @@ BigSprite.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+boss
+  rotate: false
+  xy: 1, 145
+  size: 566, 511
+  orig: 566, 511
+  offset: 0, 0
+  index: -1
 Asteroid
   rotate: false
-  xy: 1, 33
+  xy: 1, 73
   size: 70, 70
   orig: 70, 70
   offset: 0, 0
   index: -1
 SpaceShipEnemy
   rotate: false
-  xy: 73, 33
+  xy: 569, 586
   size: 70, 70
   orig: 70, 70
   offset: 0, 0
   index: -1
 SpaceShipHero
   rotate: false
-  xy: 145, 33
+  xy: 1, 1
   size: 70, 70
   orig: 70, 70
   offset: 0, 0
   index: -1
 Enemy_blaster
   rotate: false
-  xy: 1, 1
+  xy: 73, 113
   size: 30, 30
   orig: 30, 30
   offset: 0, 0
   index: -1
 Hero_blaster
   rotate: false
-  xy: 217, 73
+  xy: 569, 554
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+upgrade
+  rotate: false
+  xy: 641, 626
   size: 30, 30
   orig: 30, 30
   offset: 0, 0

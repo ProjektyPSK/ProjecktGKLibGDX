@@ -24,6 +24,7 @@ public class Ship extends Sprite {
     private int lives;
     private Game game;
     private PlayScreen screen;
+    private int shootType;
 
 
     public Ship(World world, PlayScreen screen , Game game){
@@ -32,11 +33,12 @@ public class Ship extends Sprite {
         defineShip();
         this.game = game;
         this.screen = screen;
-        shipNew = new TextureRegion(getTexture(),145,33,70,70);
+        shipNew = new TextureRegion(getTexture(),1,1,70,70);
         setBounds(500/ Main.PPM,500/ Main.PPM,70 / Main.PPM,70 / Main.PPM);
         setRegion(shipNew);
-        shootTime = 0.2f;
-        lives = 20;
+        shootTime = 1.2f;
+        lives = 30;
+        shootType = 1;
     }
 
     public void update (float dt){
@@ -53,7 +55,7 @@ public class Ship extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(35 / Main.PPM);
         fdef.filter.categoryBits = Main.SHIP_HERO_BIT;
-        fdef.filter.maskBits = Main.BORDER | Main.SHIP_ENEMY_BIT | Main.BLASTER_ENEMY;
+        fdef.filter.maskBits = Main.BORDER | Main.SHIP_ENEMY_BIT | Main.BLASTER_ENEMY |Main.UPGRADE_BIT;
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
@@ -90,12 +92,40 @@ public class Ship extends Sprite {
         if (this.lives > 1) {
             this.lives--;
             Hud.updateLives(-1);
+            Hud.updateScore(-300);
+            if(shootTime > 0.2f) {
+                shootTime *= 1.15;
+            }
+            else if (shootType > 1){
+                shootType --;
+            }
+            else {
+                shootTime *= 1.15;
+            }
+
         }
         else {
-
-            game.setScreen(new MenuScreen(game));
+            game.setScreen(new MenuScreen(game,2));
             screen.dispose();
-
         }
     }
+
+
+
+    public void colideWithUpgrade (){
+        if(shootTime > 0.2f) {
+            shootTime *= 0.85;
+        }
+        else if (shootType < 3){
+            shootType ++;
+        }
+        else {
+            Hud.updateScore(300);
+        }
+
+    }
+    public int getShootType() {
+        return shootType;
+    }
+
 }

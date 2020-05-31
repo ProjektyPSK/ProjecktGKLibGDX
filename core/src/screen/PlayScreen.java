@@ -30,6 +30,7 @@ import java.util.Scanner;
 
 
 public class PlayScreen implements Screen {
+
     private final float RESUME_X = 1000 / Main.PPM;
     private final float RESUME_Y = 800 / Main.PPM;
     private final float SAVE_X =1000 / Main.PPM;
@@ -73,18 +74,17 @@ public class PlayScreen implements Screen {
     private int waveCounter;
     private boolean menuActive;
     private boolean pauseActive;
-    MenuButton openMenu;
-    MenuButton resume;
-    MenuButton save;
-    MenuButton load;
-    MenuButton exit;
-    float scalaX;
-    float scalaY;
-    float screenHeight;
-    float screenWidth;
-    int beginWaveScore;
-    List <Background> background;
-
+    private MenuButton openMenu;
+    private MenuButton resume;
+    private MenuButton save;
+    private MenuButton load;
+    private MenuButton exit;
+    private float scalaX;
+    private float scalaY;
+    private float screenHeight;
+    private float screenWidth;
+    private int beginWaveScore;
+    private List <Background> background;
 
     public PlayScreen (Main game , World world){
         atlas= new TextureAtlas("BigSprite.atlas");
@@ -197,6 +197,8 @@ public class PlayScreen implements Screen {
                 blaster.draw(game.batch);
             }
         }
+        if(EnemyShip.getUpgrade() != null)
+        EnemyShip.getUpgrade().draw(game.batch);
 
         openMenu.draw(game.batch);
         if(menuActive){
@@ -223,11 +225,39 @@ public class PlayScreen implements Screen {
                     player.b2body.applyLinearImpulse(new Vector2(-1f, 0), player.b2body.getWorldCenter(), true);
                 }
                 if ((player.getShootTime() <= lastHeroShotTimer) && (player.isCanShoot())) {
-                    blasterList.add(new Blaster(world, this, player.getX() + player.getWidth() / 2, player.getY() + 1));
-                    blasterList.get(blasterList.size() - 1).b2body.applyLinearImpulse(new Vector2(0, 10f), blasterList.get(blasterList.size() - 1).b2body.getWorldCenter(), true);
-                    MassData mass = new MassData();
-                    mass.mass = 0.0001f;
-                    blasterList.get(blasterList.size() - 1).b2body.setMassData(mass);
+                    if (player.getShootType() ==1) {
+                        blasterList.add(new Blaster(world, this, player.getX() + player.getWidth() / 2, player.getY() + 1));
+                        blasterList.get(blasterList.size() - 1).b2body.applyLinearImpulse(new Vector2(0, 10f), blasterList.get(blasterList.size() - 1).b2body.getWorldCenter(), true);
+                        MassData mass = new MassData();
+                        mass.mass = 0.0001f;
+                        blasterList.get(blasterList.size() - 1).b2body.setMassData(mass);
+                    }
+                    else if (player.getShootType() ==2){
+                        blasterList.add(new Blaster(world, this, player.getX() + player.getWidth() / 2 + 0.5f, player.getY() + 1));
+                        blasterList.get(blasterList.size() - 1).b2body.applyLinearImpulse(new Vector2(0, 10f), blasterList.get(blasterList.size() - 1).b2body.getWorldCenter(), true);
+                        MassData mass = new MassData();
+                        mass.mass = 0.0001f;
+                        blasterList.get(blasterList.size() - 1).b2body.setMassData(mass);
+                        blasterList.add(new Blaster(world, this, player.getX() + player.getWidth() / 2 - 0.5f, player.getY() + 1));
+                        blasterList.get(blasterList.size() - 1).b2body.applyLinearImpulse(new Vector2(0, 10f), blasterList.get(blasterList.size() - 1).b2body.getWorldCenter(), true);
+                        mass.mass = 0.0001f;
+                        blasterList.get(blasterList.size() - 1).b2body.setMassData(mass);
+                    }
+                    else if (player.getShootType() ==3){
+                        blasterList.add(new Blaster(world, this, player.getX() + player.getWidth() / 2 + 0.5f, player.getY() + 1));
+                        blasterList.get(blasterList.size() - 1).b2body.applyLinearImpulse(new Vector2(0, 10f), blasterList.get(blasterList.size() - 1).b2body.getWorldCenter(), true);
+                        MassData mass = new MassData();
+                        mass.mass = 0.0001f;
+                        blasterList.get(blasterList.size() - 1).b2body.setMassData(mass);
+                        blasterList.add(new Blaster(world, this, player.getX() + player.getWidth() / 2 - 0.5f, player.getY() + 1));
+                        blasterList.get(blasterList.size() - 1).b2body.applyLinearImpulse(new Vector2(0, 10f), blasterList.get(blasterList.size() - 1).b2body.getWorldCenter(), true);
+                        mass.mass = 0.0001f;
+                        blasterList.get(blasterList.size() - 1).b2body.setMassData(mass);
+                        blasterList.add(new Blaster(world, this, player.getX() + player.getWidth() / 2, player.getY() + 1));
+                        blasterList.get(blasterList.size() - 1).b2body.applyLinearImpulse(new Vector2(0, 10f), blasterList.get(blasterList.size() - 1).b2body.getWorldCenter(), true);
+                        mass.mass = 0.0001f;
+                        blasterList.get(blasterList.size() - 1).b2body.setMassData(mass);
+                    }
                     lastHeroShotTimer = 0;
                 }
                 // AKCJA PRZYCISKU OTWIERANIA MENU
@@ -348,6 +378,8 @@ public class PlayScreen implements Screen {
                 bac.update(dt);
             }
         }
+        if( EnemyShip.getUpgrade() != null)
+        EnemyShip.getUpgrade().update(dt);
         updateBlasterList();
         updateEnemyBlasterList();
         hud.update(dt);
@@ -386,7 +418,7 @@ public class PlayScreen implements Screen {
                         player.setCanShoot(false);
                         beginWaveScore = hud.getScore();
                         break;
-                    default:System.out.println("Skonczyly się fale");
+                    default:game.setScreen(new MenuScreen(game,2));
                     break;
                 }
                 waveCounter++;
@@ -518,6 +550,7 @@ public class PlayScreen implements Screen {
         //b2dr.dispose();
         hud.dispose();
         EnemyBlaster.dispose();
+        EnemyShip.getUpgrade().dispose();
     }
 
     public TextureAtlas getAtlas() {

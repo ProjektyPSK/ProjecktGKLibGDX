@@ -20,19 +20,21 @@ public class Hud implements Disposable {
     public Stage stage;
     public Viewport viewport;
 
-    private Integer worldTimer;
+    private static Integer worldTimer;
     private static Integer score;
     private float timeCount;
-    private static Integer lives;
 
+    private static Integer lives;
     private Label countdownLabel;
     private static Label scoreLabel;
     private Label timeLabel;
     private static Label livesLabel;
     private Label livesTextLabel;
     private Label scoreTextLabel;
+    private int tryb;
 
     public Hud(SpriteBatch sb, Ship player){
+        this.tryb = 1;
         worldTimer = 300;
         timeCount = 0;
         score = 0;
@@ -68,13 +70,50 @@ public class Hud implements Disposable {
 
         stage.addActor(table);
     }
+    public Hud(SpriteBatch sb){
+        this.tryb = 2;
+     //   worldTimer = 300;
+     //   score = 0;
 
+        viewport = new FitViewport(Main.V_WIDTH  ,Main.V_HEIGHT  , new OrthographicCamera());
+        stage = new Stage(viewport, sb);
+
+        Table table = new Table();
+        table.top();
+        table.setFillParent(true);
+
+        countdownLabel = new Label(String.format("%03d", worldTimer), new Label.LabelStyle( new BitmapFont(), Color.WHITE));
+        scoreLabel = new Label(String.format("%06d", score), new Label.LabelStyle( new BitmapFont(), Color.WHITE));
+
+        scoreLabel.setFontScale(2.5f);
+        countdownLabel.setFontScale(2.5f);
+
+        table.add(scoreLabel).expandX().padTop(10);
+        table.add(countdownLabel).expandX().padTop(10);
+
+        stage.addActor(table);
+    }
     public void update (float dt){
-        timeCount += dt;
-        if(timeCount >= 1) {
+        if(tryb ==1) {
+            timeCount += dt;
+            if (timeCount >= 1) {
+                worldTimer--;
+                countdownLabel.setText(String.format("%03d", worldTimer));
+                timeCount = 0;
+            }
+        }
+        if(tryb == 2){
+        if( worldTimer > 0){
+            updateScore(5);
             worldTimer --;
             countdownLabel.setText(String.format("%03d", worldTimer));
-            timeCount = 0;
+        }
+            if( worldTimer < 0){
+                updateScore(-5);
+                worldTimer ++;
+                countdownLabel.setText(String.format("%03d", worldTimer));
+            }
+
         }
     }
     public static void updateScore (int value){

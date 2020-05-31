@@ -11,6 +11,7 @@ import com.mygdx.game.sprites.Blaster;
 import com.mygdx.game.sprites.EnemyBlaster;
 import com.mygdx.game.sprites.EnemyShip;
 import com.mygdx.game.sprites.Ship;
+import com.mygdx.game.sprites.Upgrade;
 
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
@@ -22,10 +23,7 @@ public class WorldContactListener implements ContactListener {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
-
-
         switch (cDef) {
-
 
             case Main.SHIP_ENEMY_BIT | Main.SHIP_HERO_BIT:
                 if(fixA.getFilterData().categoryBits == Main.SHIP_ENEMY_BIT){
@@ -36,9 +34,9 @@ public class WorldContactListener implements ContactListener {
                 else if (fixB.getFilterData().categoryBits == Main.SHIP_ENEMY_BIT){
 
                      ((EnemyShip) fixB.getUserData()).colideWithEntiti();
-
                 }
                 break;
+
             case Main.SHIP_ENEMY_BIT | Main.BLASTER_HERO:
                 if(fixA.getFilterData().categoryBits == Main.SHIP_ENEMY_BIT ) {
                     ((EnemyShip) fixA.getUserData()).colideWithEntiti();
@@ -47,9 +45,9 @@ public class WorldContactListener implements ContactListener {
                 else if (fixB.getFilterData().categoryBits == Main.SHIP_ENEMY_BIT ) {
                     ((EnemyShip) fixB.getUserData()).colideWithEntiti();
                     ((Blaster) fixA.getUserData()).colideWithEntiti();
-
                 }
                 break;
+
             case Main.SHIP_HERO_BIT | Main.BLASTER_ENEMY:
                 if(fixA.getFilterData().categoryBits == Main.SHIP_HERO_BIT) {
                     ((EnemyBlaster) fixB.getUserData()).colideWithEntiti();
@@ -60,6 +58,7 @@ public class WorldContactListener implements ContactListener {
                     ((Ship) fixB.getUserData()).colideWithEntiti();
                 }
                 break;
+
             case Main.SHIP_ENEMY_BIT | Main.SHIP_ENEMY_BIT:
                 if(fixA.getFilterData().categoryBits == Main.SHIP_HERO_BIT) {
                     ((EnemyShip) fixB.getUserData()).colideWithEntiti();
@@ -68,6 +67,17 @@ public class WorldContactListener implements ContactListener {
                 else if(fixB.getFilterData().categoryBits == Main.SHIP_HERO_BIT) {
                     ((EnemyShip) fixA.getUserData()).colideWithEntiti();
                     ((Ship) fixB.getUserData()).colideWithEntiti();
+                }
+                break;
+
+            case Main.SHIP_HERO_BIT | Main.UPGRADE_BIT:
+                if(fixA.getFilterData().categoryBits == Main.SHIP_HERO_BIT) {
+                    ((Upgrade) fixB.getUserData()).colideWithEntiti();
+                    ((Ship) fixA.getUserData()).colideWithUpgrade();
+                }
+                else if(fixB.getFilterData().categoryBits == Main.SHIP_HERO_BIT) {
+                    ((Upgrade) fixA.getUserData()).colideWithEntiti();
+                    ((Ship) fixB.getUserData()).colideWithUpgrade();
                 }
                 break;
 

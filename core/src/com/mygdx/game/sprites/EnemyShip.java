@@ -18,7 +18,9 @@ import java.util.Random;
 
 import Scenes.Hud;
 import screen.PlayScreen;
-
+/**
+ * Klasa odpowiedzialna za tworzenie obiektu pocisku gracza
+ */
 public class EnemyShip extends Sprite {
     public World world;
     public Body b2body;
@@ -39,8 +41,16 @@ public class EnemyShip extends Sprite {
     private boolean moveRight;
     private boolean moveDown;
     private short moveLeftOrRight;
+    private static Upgrade upgrade;
 
-
+    /**
+     * Konstruktor określa rozmiar, grafike i przygotowuje zmienne niezbędne do określenia sposobu poruszania się ciała obiektu
+     * @param world
+     * @param screen
+     * @param x
+     * @param y
+     * @param movementType styl w którym ma się poruszać obiekt
+     */
     public EnemyShip(World world, PlayScreen screen, float x, float y, short movementType){
         super(screen.getAtlas().findRegion("SpaceShipEnemy"));
         rand = new Random();
@@ -48,7 +58,7 @@ public class EnemyShip extends Sprite {
         this.screen = screen;
         this.movementType = movementType;
         defineShip(x, y);
-        shipNew = new TextureRegion(getTexture(),73,33,70,70);
+        shipNew = new TextureRegion(getTexture(),569,586,70,70);
         setBounds(x/ Main.PPM,y/ Main.PPM,70 / Main.PPM,70 / Main.PPM);
         setRegion(shipNew);
         setToDestroy = false;
@@ -68,11 +78,18 @@ public class EnemyShip extends Sprite {
         }
     }
 
+
     public void update (float dt, Ship player){
         if (setToDestroy && !destroyed){
             if(loadChecker) {
                 Hud.updateScore(20);
-            }
+                if(upgrade !=null) {
+
+                }
+                else if (20 > rand.nextInt(50))
+                    upgrade =  new Upgrade(world, screen , this.getX() + this.getWidth() / 2, this.getY());
+
+        }
             world.destroyBody(b2body);
             destroyed = true;
             screen.getEnemyShips().removeValue(this, true);
@@ -82,9 +99,9 @@ public class EnemyShip extends Sprite {
             setPosition(b2body.getPosition().x - getWidth() /2 , b2body.getPosition().y - getHeight() /2);
             movement(dt , player);
             shoot(dt);
+
+
         }
-
-
     }
 
     public  void defineShip(float x, float y){
@@ -228,13 +245,18 @@ if(movementType == 2) {
     }
 
     public void colideWithEntiti(){
-        loadChecker = true;
+            loadChecker = true;
             setToDestroy = true;
+
             }
 
     public void setSetToDestroy(boolean setToDestroy) {
         loadChecker = false;
         this.setToDestroy = setToDestroy;
+    }
+
+    public static void setUpgrade(Upgrade upgrade) {
+        EnemyShip.upgrade = upgrade;
     }
 
     public static List<EnemyBlaster> getBlasterList() {
@@ -243,5 +265,9 @@ if(movementType == 2) {
 
     public boolean isCanShoot() {
         return canShoot;
+    }
+
+    public static Upgrade getUpgrade() {
+        return upgrade;
     }
 }
