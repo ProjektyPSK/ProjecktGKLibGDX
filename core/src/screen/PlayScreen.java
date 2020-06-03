@@ -28,7 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
+/**
+ * Klasa odpowiedzialna za wyświetlanie wszystkich elementów gry
+ */
 public class PlayScreen implements Screen {
 
     private final float RESUME_X = 1000 / Main.PPM;
@@ -46,12 +48,10 @@ public class PlayScreen implements Screen {
     private final float BUTTON_MENU_WIDTH = 40 / Main.PPM;
     private final float BUTTON_MENU_HEIGHT = 40 / Main.PPM;
 
-
     private Main game;
     private Hud hud;
     private OrthographicCamera gameCam;
     private Viewport gamePort;
-
 
     private TmxMapLoader mapLoader;
     private TiledMap map;
@@ -60,7 +60,6 @@ public class PlayScreen implements Screen {
     private TextureAtlas atlas;
     private TextureAtlas menuAtlas;
     private float lastTouch;
-
 
     private World world;
     private Box2DDebugRenderer b2dr;
@@ -86,6 +85,12 @@ public class PlayScreen implements Screen {
     private int beginWaveScore;
     private List <Background> background;
 
+    /**
+     * Konstruktor pobiera atlasy Spritów i menu, tworzy kamere, hud, gracza, kreator,
+     * inicjuje przyciski, tło i określa wartość podstawowych parametrów
+     * @param game
+     * @param world
+     */
     public PlayScreen (Main game , World world){
         atlas= new TextureAtlas("BigSprite.atlas");
         menuAtlas= new TextureAtlas("Menu.pack");
@@ -103,14 +108,10 @@ public class PlayScreen implements Screen {
 
         gameCam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight()/2 , 0);
 
-
         b2dr = new Box2DDebugRenderer();
-
-
 
         creator = new B2WorldCreator (world, map, this);
         lastTouch=player.b2body.getPosition().x;
-
 
         world.setContactListener(new WorldContactListener());
 
@@ -131,7 +132,6 @@ public class PlayScreen implements Screen {
         for (Background bac: backgroundtmp){
             background.add(bac);
         }
-
         waveCounter=1;
         menuActive=false;
         pauseActive = true;
@@ -141,17 +141,18 @@ public class PlayScreen implements Screen {
         load = new MenuButton(this, world, "LOAD", 1,1,900,415 , 512 ,512,BUTTON_BOUNDS_WIDTH,BUTTON_BOUNDS_HEIGHT, LOAD_X, LOAD_Y);
         exit = new MenuButton(this, world, "EXIT", 1,418,900,415 , 512 ,512,BUTTON_BOUNDS_WIDTH,BUTTON_BOUNDS_HEIGHT, EXIT_X, EXIT_Y);
 
-
-
     }
     @Override
     public void show() {
 
     }
 
+    /**
+     * Metoda odpowiedziala za renderowanie wszystkich elementów gry
+     * @param delta zmiana czasu
+     */
     @Override
     public void render(float delta) {
-
         update(delta);
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -165,6 +166,10 @@ public class PlayScreen implements Screen {
 
     }
 
+    /**
+     * Metoda odpowiedzialna za weryfikowanie zmiany położenia obiektów i Spritów
+     * @param dt zmiana czasu
+     */
     public void update(float dt) {
         world.step(1/60f, 6 , 2);
         gameCam.position.y = player.b2body.getPosition().y+5;
@@ -179,6 +184,9 @@ public class PlayScreen implements Screen {
 
     }
 
+    /**
+     * Metoda odpowiedzialna za renderowanie wszystkich Spritów
+     */
     public void drawBatch(){
         game.batch.begin();
         for (Background bac : background) {
@@ -210,6 +218,13 @@ public class PlayScreen implements Screen {
         game.batch.end();
     }
 
+    /**
+     * Metoda obsługujący dotyk na ekranie
+     * poruszania się statku
+     * strzelanie
+     * obsługe przycików menu i pauzowanie gry
+     * @param dt zmiana czasu
+     */
     public void handleInput(float dt) {
 
         if (Gdx.input.isTouched() ) {
@@ -327,13 +342,20 @@ public class PlayScreen implements Screen {
             if (lastHeroShotTimer > 4) {
                 player.setCanShoot(true);
             }
-
     }
+
+    /**
+     * Metoda zatrzumująca statek, gdy trafi do miejsca ostatniego dotknięcia ekranu w pozyvcji X
+     */
     public void moveShipChecker(){
         if (Math.abs( lastTouch - player.b2body.getPosition().x ) < 0.3){
             player.b2body.setLinearVelocity(0,0);
         }
     }
+
+    /**
+     * Metoda czyszcząca liste pocsków gracza po przekroczeniu danego czasu
+     */
     public void updateBlasterList(){
         for (Blaster blaster: blasterList){
             if (blaster.getStateTime() > 2 || blaster.isDestroyed() || blaster.isSetToDestroy()){
@@ -344,6 +366,9 @@ public class PlayScreen implements Screen {
             blasterList.remove(blaster);
         }
     }
+    /**
+     * Metoda czyszcząca liste pocsków przeciwników po przekroczeniu danego czasu
+     */
     public void updateEnemyBlasterList () {
         if (enemyShips.size > 0) {
             for (EnemyBlaster blaster : EnemyShip.getBlasterList()) {
@@ -359,7 +384,11 @@ public class PlayScreen implements Screen {
     }
 
 
-
+    /**
+     * obsługa poruszania się obiektów, które muszą sie zatrzymac w przypadku
+     * włączenia menu pauzy
+     * @param dt zmiana czasu
+     */
     public void updateDependOnMenu (float dt) {
         moveShipChecker();
         updateEnemiesWave(dt);
@@ -385,6 +414,10 @@ public class PlayScreen implements Screen {
         hud.update(dt);
     }
 
+    /**
+     * W przypadku gdy lista przeciwników jest pusta tworzona jest nowa fala przeciwników
+     * @param dt zmiana czasu
+     */
     public void updateEnemiesWave (float dt){
         for (EnemyShip enemy: enemyShips) {
             enemy.update(dt , player);
@@ -427,6 +460,9 @@ public class PlayScreen implements Screen {
 
     }
 
+    /**
+     * funkcja zatrzymująca ruch obiektów  wprzypadku pauzy i nadaje im ponownei ruch
+     */
     public void pauseControl (){
         if(menuActive && pauseActive){
             player.b2body.setLinearVelocity(0f,0f);
@@ -474,6 +510,11 @@ public class PlayScreen implements Screen {
             pauseActive = true;
         }
     }
+
+    /**
+     * Funckja zapisująca gre
+     * @throws FileNotFoundException
+     */
     public void saveGame() throws FileNotFoundException {
         PrintWriter zapis = new PrintWriter("save.txt");
         zapis.println(waveCounter);
@@ -482,6 +523,10 @@ public class PlayScreen implements Screen {
         zapis.close();
     }
 
+    /**
+     * funkcja wczytująca gre
+     * @throws FileNotFoundException
+     */
     public void loadGame () throws FileNotFoundException {
         File file = new File("save.txt");
         Scanner in = new Scanner(file);
@@ -504,18 +549,25 @@ public class PlayScreen implements Screen {
         Hud.updateScore(Integer.parseInt(in.nextLine()));
 
     }
+
+    /**
+     * Funkcja zamieniająca wartwy tła w zależnoścu od ich pozycji
+     */
     public void backgroundChecker (){
         if(background.size() > 0){
             for (Background bac : background){
                 if (bac.b2body.getTransform().getPosition().y < -17.5f){
                     bac.b2body.setTransform(bac.b2body.getPosition().x, 17.47f, 0);
                 }
-
             }
         }
     }
 
-
+    /**
+     * Funkcja nadzorująca zmiana rozmiaru okna
+     * @param width
+     * @param height
+     */
     @Override
     public void resize(int width, int height) {
 
@@ -542,6 +594,9 @@ public class PlayScreen implements Screen {
 
     }
 
+    /**
+     * Funkcja usuwająca obiekty w przypadku zamknięcia ekranu
+     */
     @Override
     public void dispose() {
         map.dispose();

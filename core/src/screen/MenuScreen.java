@@ -17,6 +17,9 @@ import com.mygdx.game.sprites.MenuButton;
 
 import Scenes.Hud;
 
+/**
+ * Klasa odpowiedzialna za wyświetlenie ekranu menu
+ */
 public class MenuScreen implements Screen {
     private final float PLAY_X = 1000;
     private final float PLAY_Y = 800;
@@ -45,6 +48,11 @@ public class MenuScreen implements Screen {
 
     private Game game;
 
+    /**
+     *Konstruktor tworzy układ przycików i opcjonalnie nakłada Hud
+     * @param game
+     * @param tryb w przypadku gdy tryb wynosi '2' dodatkowo renderowany jest Hud
+     */
     public MenuScreen (Game game, int tryb){
         this.game=game;
         this.tryb = tryb;
@@ -60,8 +68,6 @@ public class MenuScreen implements Screen {
         exit = new MenuButton(this,world, "EXIT", 1,418,900,415 , 500 ,500,BUTTON_BOUNDS_WIDTH,BUTTON_BOUNDS_HEIGHT, EXIT_X, EXIT_Y);
         if(tryb ==2 )
         hud = new Hud(((Main) game).batch);
-
-
     }
 
     @Override
@@ -69,6 +75,10 @@ public class MenuScreen implements Screen {
 
     }
 
+    /**
+     * Renderuje wszystkie dane widoczne na ekranie menu
+     * @param delta zmiana czasu
+     */
     @Override
     public void render(float delta) {
         b2dr.render(world, gameCam.combined);
@@ -94,11 +104,7 @@ public class MenuScreen implements Screen {
                     screenHeight - Gdx.input.getY() < (EXIT_Y / scalaY) + (BUTTON_BOUNDS_HEIGHT / scalaY / 2) &&
                     screenHeight - Gdx.input.getY() > (EXIT_Y / scalaY) - (BUTTON_BOUNDS_HEIGHT / scalaY / 2)){
                 Gdx.app.exit();
-
             }
-
-
-
         }
         Gdx.gl.glClearColor(0.3f,0.5f,0.2f,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -116,6 +122,11 @@ public class MenuScreen implements Screen {
         }
     }
 
+    /**
+     * edytuje wielkość wysokości o szerekości ekranu w przypadku jego zmiany
+     * @param width
+     * @param height
+     */
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);

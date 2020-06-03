@@ -19,6 +19,9 @@ import java.util.List;
 
 import screen.PlayScreen;
 
+/**
+ * Klasa odpowiedzialna za zaczytywanie danych z pliku ".Tiled"
+ */
 public class B2WorldCreator {
     public Array<EnemyShip> enemyShips;
     public Array<EnemyShip> enemyShipsStage2;
@@ -26,6 +29,12 @@ public class B2WorldCreator {
     private World world;
     private PlayScreen screen;
 
+    /**
+     * Konstruktor tworzy granice świata (jego boczne krawędzie) i dodaje je do aktualnej mapy
+     * @param world
+     * @param map
+     * @param screen
+     */
     public B2WorldCreator(World world, TiledMap map, PlayScreen screen) {
         BodyDef bdef = new BodyDef();
         this.map = map;
@@ -51,6 +60,13 @@ public class B2WorldCreator {
 
 
     }
+
+    /**
+     * Funckja tworzy Liste obiektów tła (zawsze o rozmiarze 4 ze względu na konstrukcje pliku ".Tiled")
+     * @param layer wartwa tła
+     * @param path
+     * @return
+     */
     public List<Background> createBackground (int layer, String path){
         List<Background> background = new ArrayList<>();
         for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
@@ -59,6 +75,13 @@ public class B2WorldCreator {
         }
         return background;
     }
+
+    /**
+     * Funkcja tworzy fale przeciwników na podstawie ułożenia na warstwie z pliku ".Tiled"
+     * @param EnemyShip
+     * @param layer wartwa statków
+     * @param movementType styl ruchu przeciwników w danej fali
+     */
     public void CreateNewWave (Array<EnemyShip> EnemyShip, int layer, short movementType) {
         for (MapObject object : map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();

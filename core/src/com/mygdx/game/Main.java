@@ -10,6 +10,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import screen.MenuScreen;
 import screen.PlayScreen;
 
+/**
+ * Głowna klasa gry posiadająca stałe bitów, szeromości ekranu i
+ * skali wyświetlania, inicjalizująca pierwszy ekran oraz posiada
+ * SpriteBatch przechowujący wszystkie używane Sprity
+ */
 public class Main extends Game {
 	public  static final int V_HEIGHT =1080;
 	public  static final int V_WIDTH = 2100;
@@ -26,6 +31,9 @@ public class Main extends Game {
 
 	public SpriteBatch batch;
 
+	/**
+	 * zlecenie otworzenia menu bez trybu zliczenia wyniku
+	 */
 	@Override
 	public void create () {
 		batch = new SpriteBatch();

@@ -16,13 +16,21 @@ import com.mygdx.game.sprites.Upgrade;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 
+/**
+ * Klasa odpowiedzialna za nasłuch kolizcji zgodnie z nadanymi bitami dla poszczególnych obiektów,
+ * obiekty, które nawzajem ze sobą nie kolidują, nie są tutaj wywoływane  fdef.filter.categoryBits
+ */
 public class WorldContactListener implements ContactListener {
-
+    /**
+     * Funkcja nasłuchuje czy doszło do kontaktu, a jesli tak wykonuje przypisane mu akcje, zdefiniowane w klasach obiektów
+     * @param contact
+     */
     @Override
     public void beginContact(Contact contact) {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
+
         switch (cDef) {
 
             case Main.SHIP_ENEMY_BIT | Main.SHIP_HERO_BIT:

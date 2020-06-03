@@ -13,6 +13,9 @@ import com.mygdx.game.Main;
 
 import screen.PlayScreen;
 
+/**
+ * Klasa odpowiedzialna za tworzenie obiektu ulepszenia
+ */
 public class Upgrade extends Sprite {
 
     public World world;
@@ -26,6 +29,13 @@ public class Upgrade extends Sprite {
     private float size;
     private boolean growShrink;
 
+    /**
+     * Konstruktor, w którym określana jest grafika picisku oraz jego rozmiar i pozycja sprite
+     * @param world
+     * @param screen
+     * @param x
+     * @param y
+     */
     public Upgrade(World world, PlayScreen screen, float x, float y){
         super(screen.getAtlas().findRegion("upgrade"));
         this.world = world;
@@ -41,7 +51,10 @@ public class Upgrade extends Sprite {
         stateTime=0;
         growShrink=true;
     }
-
+    /**
+     * Funckja odpowiedzialna za odświerzanie pozycji sprite oraz zmiany jego rozmiaru
+     * @param dt czas
+     */
     public void update (float dt){
         stateTime += dt;
         if (stateTime > 10) {
@@ -70,7 +83,11 @@ public class Upgrade extends Sprite {
         }
     }
 
-
+    /**
+     * Funkcja określa zasady kolizcji rozmiar obiketu oraz jego pozycje
+     * @param x
+     * @param y
+     */
     public  void defineUpgrade(float x, float y){
         BodyDef bdef = new BodyDef();
         bdef.position.set(x,y);
@@ -90,6 +107,10 @@ public class Upgrade extends Sprite {
         b2body.createFixture(fdef).setUserData(this);
         b2body.setLinearVelocity(0,-2f);
     }
+    /**
+     * Funkcja określa warunek do kiedy ma być on rysowany
+     * @param batch zbiór grafik
+     */
     public void draw(Batch batch){
         if(!destroyed) {
             super.draw(batch);

@@ -16,6 +16,9 @@ import com.mygdx.game.sprites.Ship;
 
 import java.awt.*;
 
+/**
+ * klasa tworząca Hud gry
+ */
 public class Hud implements Disposable {
     public Stage stage;
     public Viewport viewport;
@@ -33,6 +36,11 @@ public class Hud implements Disposable {
     private Label scoreTextLabel;
     private int tryb;
 
+    /**
+     * Konstruktor wykonywany w klasie PlayScreen, tworzący wygląd Hud
+     * @param sb
+     * @param player
+     */
     public Hud(SpriteBatch sb, Ship player){
         this.tryb = 1;
         worldTimer = 300;
@@ -70,10 +78,12 @@ public class Hud implements Disposable {
 
         stage.addActor(table);
     }
+    /**
+     * Konstruktor wykonywany w klasie MenuScreen, tworzący wygląd Hud
+     * @param sb
+     */
     public Hud(SpriteBatch sb){
         this.tryb = 2;
-     //   worldTimer = 300;
-     //   score = 0;
 
         viewport = new FitViewport(Main.V_WIDTH  ,Main.V_HEIGHT  , new OrthographicCamera());
         stage = new Stage(viewport, sb);
@@ -93,6 +103,11 @@ public class Hud implements Disposable {
 
         stage.addActor(table);
     }
+
+    /**
+     * Odlicza czas w grze lub przelicza czas na wynik w menui
+     * @param dt
+     */
     public void update (float dt){
         if(tryb ==1) {
             timeCount += dt;
@@ -116,10 +131,20 @@ public class Hud implements Disposable {
 
         }
     }
+
+    /**
+     * służy do zmiany wyniku i wyświetlenia go
+     * @param value
+     */
     public static void updateScore (int value){
         score += value;
         scoreLabel.setText(String.format("%06d", score));
     }
+
+    /**
+     * służy do zmiany ilości żyć i wyświetlenia jej
+     * @param value
+     */
     public static void updateLives (int value){
         lives += value;
         livesLabel.setText(String.format("%02d", lives));

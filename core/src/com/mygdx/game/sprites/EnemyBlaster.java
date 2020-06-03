@@ -73,7 +73,6 @@ public class EnemyBlaster extends Sprite {
                 size--;
                 setBounds(b2body.getPosition().x - getWidth() /2,b2body.getPosition().y - getHeight() /2, size / Main.PPM, size / Main.PPM);
             }
-
             if (size > 30)
                 growShrink = false;
             if(size < 10)

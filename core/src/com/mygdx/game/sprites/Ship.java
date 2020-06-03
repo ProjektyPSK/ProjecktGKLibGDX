@@ -15,6 +15,9 @@ import Scenes.Hud;
 import screen.MenuScreen;
 import screen.PlayScreen;
 
+/**
+ * Klasa statku gracza
+ */
 public class Ship extends Sprite {
     public World world;
     public Body b2body;
@@ -26,7 +29,11 @@ public class Ship extends Sprite {
     private PlayScreen screen;
     private int shootType;
 
-
+    /**
+     * Konstruktor, w którym określana jest grafika picisku oraz jego rozmiar sprite
+     * @param world
+     * @param screen
+     */
     public Ship(World world, PlayScreen screen , Game game){
         super(screen.getAtlas().findRegion("SpaceShipHero"));
         this.world = world;
@@ -37,14 +44,20 @@ public class Ship extends Sprite {
         setBounds(500/ Main.PPM,500/ Main.PPM,70 / Main.PPM,70 / Main.PPM);
         setRegion(shipNew);
         shootTime = 1.2f;
-        lives = 30;
+        lives = 20;
         shootType = 1;
     }
-
+    /**
+     * funkcja odpowiedzialna za "przyklejenie" sprite'a do ciała obiektu
+     * @param dt czas
+     */
     public void update (float dt){
         setPosition(b2body.getPosition().x - getWidth() /2 , b2body.getPosition().y - getHeight() /2);
     }
+    /**
+     * Funkcja określa zasady kolizcji rozmiar obiketu oraz nadaje mu "ciało"
 
+     */
     public  void defineShip(){
         BodyDef bdef = new BodyDef();
         bdef.position.set(1000 / Main.PPM,50 / Main.PPM);
@@ -88,6 +101,9 @@ public class Ship extends Sprite {
         this.canShoot = canShoot;
     }
 
+    /**
+     * określa zachowanie się w przypadku kolizji ze statkiem przeciwnika lub pociskiem
+     */
     public void colideWithEntiti() {
         if (this.lives > 1) {
             this.lives--;
@@ -111,6 +127,9 @@ public class Ship extends Sprite {
     }
 
 
+    /**
+     * określa zachowanie się w przypadku kolizcji z ulepszeniem
+     */
 
     public void colideWithUpgrade (){
         if(shootTime > 0.2f) {

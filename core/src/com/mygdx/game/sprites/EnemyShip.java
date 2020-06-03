@@ -11,7 +11,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Main;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -34,6 +33,9 @@ public class EnemyShip extends Sprite {
     private static List<EnemyBlaster> blasterList = new ArrayList<>();
     private PlayScreen screen;
     private boolean canShoot;
+    /**
+     * @param loadChecker Weryfikuje naliczanie punktów w przypadku zniszczenia statków przez wczytanie gry
+     */
     private boolean loadChecker;
     private boolean diving;
     short movementType;
@@ -78,7 +80,11 @@ public class EnemyShip extends Sprite {
         }
     }
 
-
+    /**
+     * Funkcja odpowiedzialna za weryfikowania statu statku oraz jego ruchu i akcjach im poważyszących
+     * @param dt
+     * @param player
+     */
     public void update (float dt, Ship player){
         if (setToDestroy && !destroyed){
             if(loadChecker) {
@@ -104,6 +110,11 @@ public class EnemyShip extends Sprite {
         }
     }
 
+    /**
+     * Funkcja określa zasady kolizcji w zeleżności od typu porusznaia się, rozmiar obiektu oraz jego pozycje
+     * @param x
+     * @param y
+     */
     public  void defineShip(float x, float y){
         BodyDef bdef = new BodyDef();
         bdef.position.set(x / Main.PPM,y / Main.PPM);
@@ -125,6 +136,11 @@ public class EnemyShip extends Sprite {
         this.b2body.applyLinearImpulse(new Vector2(0, -0.6f), this.b2body.getWorldCenter(), true);
         canShoot = false;
     }
+
+    /**
+     * funkcja odpowiedzialna za sterowanie częstotliwością strzału i momentami, kiedy ma być on nieaktywny
+     * @param dt
+     */
     public void shoot(float dt){
 
         if(shootTime  >= (rand.nextInt(5000)  /1.3 ) &&(canShoot)){
@@ -138,6 +154,12 @@ public class EnemyShip extends Sprite {
             this.canShoot=true;
         }
     }
+
+    /**
+     * Funkcja określająca 3 paterny poruszania się statku, w zależności od fali w której występuje.
+     * @param dt czas
+     * @param player obiekt klasy Ship, używany do określenia prawidłowej pozycji Y obiektu
+     */
     public void movement(float dt, Ship player){
         movementTime += dt;
 if(movementType == 0) {
@@ -172,7 +194,6 @@ if(movementType == 0) {
             b2body.setMassData(mass);
         }
         diving = true;
-
     }
     if (b2body.getTransform().getPosition().y < -1.0f) {
         b2body.setTransform(b2body.getPosition().x, 12f, 0);
@@ -191,7 +212,6 @@ if(movementType == 0) {
         MassData mass = new MassData();
         mass.mass = 1f;
         b2body.setMassData(mass);
-
     }
 }
 if(movementType == 1){
@@ -224,7 +244,6 @@ if(movementType == 1){
     if (b2body.getTransform().getPosition().y < -1.0f) {
         b2body.setTransform(b2body.getPosition().x, 11f, 0);
     }
-
 }
 if(movementType == 2) {
     if (movementTime < 7f)
@@ -235,7 +254,6 @@ if(movementType == 2) {
             b2body.setTransform(-0.5f, b2body.getPosition().y, 0);
         }
     }
-
 }
     }
 
@@ -244,10 +262,12 @@ if(movementType == 2) {
             super.draw(batch);
     }
 
+    /**
+     * Funkcja określanjąca akcje po kolizji z pociskiem gracza lub graczem
+     */
     public void colideWithEntiti(){
             loadChecker = true;
             setToDestroy = true;
-
             }
 
     public void setSetToDestroy(boolean setToDestroy) {
